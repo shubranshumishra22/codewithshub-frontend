@@ -15,7 +15,7 @@ import { format, isBefore, parseISO } from 'date-fns';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient';
-import { apiGet, apiPost } from '../lib/apiClient';
+import { apiDelete, apiGet, apiPost } from '../lib/apiClient';
 import { useAuth } from '../context/AuthContext';
 
 const STRIVER_SHEET_NAME = 'Striver A-Z';
@@ -241,6 +241,71 @@ export default function SheetPage() {
       queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
     },
   });
+
+  const unmarkSolvedMutation = useMutation({
+    mutationFn: async (questionId) => apiDelete(`/progress/${questionId}`),
+    onMutate: async (questionId) => {
+      await queryClient.cancelQueries({ queryKey: ['sheet-progress', sheetId, user?.id] });
+      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+
+      const previousProgress = queryClient.getQueryData(['sheet-progress', sheetId, user?.id]);
+      const previousRevisions = queryClient.getQueryData([
+        'sheet-revisions',
+        sheetId,
+        user?.id,
+        questionIds.join(','),
+      ]);
+
+      queryClient.setQueryData(['sheet-progress', sheetId, user?.id], (current) => {
+        const rows = Array.isArray(current) ? current : [];
+        const existingRow = rows.find((row) => row.question_id === questionId);
+
+        if (!existingRow?.is_solved) {
+          return rows;
+        }
+
+        const nextRow = {
+          ...existingRow,
+          is_solved: false,
+          solved_at: null,
+        };
+
+        const filteredRows = rows.filter((row) => row.question_id !== questionId);
+        return [...filteredRows, nextRow];
+      });
+
+      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], (current) => {
+        const rows = Array.isArray(current) ? current : [];
+        return rows.filter((row) => row.question_id !== questionId);
+      });
+
+      return { previousProgress, previousRevisions };
+    },
+    onError: (error, _questionId, context) => {
+      if (context?.previousProgress) {
+        queryClient.setQueryData(['sheet-progress', sheetId, user?.id], context.previousProgress);
+      }
+
+      if (context?.previousRevisions) {
+        queryClient.setQueryData(
+          ['sheet-revisions', sheetId, user?.id, questionIds.join(',')],
+          context.previousRevisions
+        );
+      }
+
+      toast.error(error.message || 'Could not mark the question as unsolved.');
+    },
+    onSuccess: () => {
+      toast.success('Question marked as unsolved.');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['sheet-progress', sheetId, user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+    },
+  });
+
+  const progressMutationPending =
+    markSolvedMutation.isPending || unmarkSolvedMutation.isPending;
 
   const saveNotesMutation = useMutation({
     mutationFn: async ({ questionId, notes, isSolved, solvedAt }) => {
@@ -538,8 +603,15 @@ export default function SheetPage() {
                                   <td className="checkbox-column" data-label="Done">
                                     <Checkbox
                                       checked={question.isSolved}
-                                      disabled={question.isSolved || markSolvedMutation.isPending}
-                                      onChange={() => markSolvedMutation.mutate(question.id)}
+                                      disabled={progressMutationPending}
+                                      onChange={() => {
+                                        if (question.isSolved) {
+                                          unmarkSolvedMutation.mutate(question.id);
+                                          return;
+                                        }
+
+                                        markSolvedMutation.mutate(question.id);
+                                      }}
                                     />
                                   </td>
                                   <td data-label="Problem">

@@ -24,3 +24,7 @@ export function apiGet(url) {
 export function apiPost(url, data) {
   return apiRequest('post', url, data);
 }
+
+export function apiDelete(url) {
+  return apiRequest('delete', url);
+}
