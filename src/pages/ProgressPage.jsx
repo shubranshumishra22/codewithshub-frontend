@@ -28,15 +28,16 @@ import { Link } from 'react-router-dom';
 import { apiGet } from '../lib/apiClient';
 import { useAuth } from '../context/AuthContext';
 import useCountUp from '../hooks/useCountUp';
+import SiteFooter from '../components/SiteFooter';
 
 const STRIVER_SHEET_NAME = 'Striver A-Z';
 const DIFFICULTY_COLORS = {
-  easy: '#00f5ff',
-  medium: '#ffd700',
-  hard: '#ff5f7a',
+  easy: '#d4d4d4',
+  medium: '#737373',
+  hard: '#000000',
 };
 
-const heatmapColors = ['#101a30', '#153052', '#1d5a87', '#21a86e', '#c7ff4e'];
+const heatmapColors = ['#f0f0f0', '#d4d4d4', '#737373', '#000000'];
 
 function StatCard({ icon, label, value, suffix = '' }) {
   return (
@@ -76,12 +77,6 @@ function CircularProgressRing({ percentage }) {
   return (
     <div className="progress-ring-shell">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <defs>
-          <linearGradient id="progressRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00f5ff" />
-            <stop offset="100%" stopColor="#ffd700" />
-          </linearGradient>
-        </defs>
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -97,7 +92,7 @@ function CircularProgressRing({ percentage }) {
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
-          stroke="url(#progressRingGradient)"
+          stroke="#000000"
         />
       </svg>
       <div className="progress-ring-center">
@@ -333,7 +328,7 @@ export default function ProgressPage() {
                         className="topic-bar-fill"
                         style={{
                           width: `${topic.percentage}%`,
-                          background: `linear-gradient(90deg, hsl(${Math.round((100 - topic.percentage) * 1.2)}, 90%, 55%), hsl(${Math.round(topic.percentage * 1.2)}, 95%, 55%))`,
+                          background: '#000000',
                         }}
                       />
                     </div>
@@ -361,7 +356,7 @@ export default function ProgressPage() {
                   <ResponsiveContainer width="100%" height={320}>
                     <PieChart>
                       <Pie
-                        data={chartData.length > 0 ? chartData : [{ name: 'No Data', value: 1, color: '#29344f' }]}
+                        data={chartData.length > 0 ? chartData : [{ name: 'No Data', value: 1, color: '#d4d4d4' }]}
                         dataKey="value"
                         nameKey="name"
                         innerRadius={84}
@@ -369,16 +364,16 @@ export default function ProgressPage() {
                         paddingAngle={3}
                         stroke="none"
                       >
-                        {(chartData.length > 0 ? chartData : [{ color: '#29344f' }]).map((entry, index) => (
+                        {(chartData.length > 0 ? chartData : [{ color: '#d4d4d4' }]).map((entry, index) => (
                           <Cell key={`slice-${entry.name}-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
                       <Tooltip
                         contentStyle={{
-                          background: '#0b1220',
-                          border: '1px solid rgba(0, 245, 255, 0.2)',
-                          borderRadius: '14px',
-                          color: '#eff6ff',
+                          background: '#ffffff',
+                          border: '0.5px solid #e5e5e5',
+                          borderRadius: '12px',
+                          color: '#000000',
                         }}
                       />
                       <Legend />
@@ -404,6 +399,7 @@ export default function ProgressPage() {
           </>
         )}
       </section>
+      <SiteFooter />
     </main>
   );
 }

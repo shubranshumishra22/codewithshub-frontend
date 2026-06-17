@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient';
 import { apiDelete, apiGet, apiPost } from '../lib/apiClient';
 import { useAuth } from '../context/AuthContext';
+import SiteFooter from '../components/SiteFooter';
 
 const STRIVER_SHEET_NAME = 'Striver A-Z';
 
@@ -488,7 +489,10 @@ export default function SheetPage() {
               <BookOpen size={16} />
               <span>STRIVER A-Z SHEET</span>
             </div>
-            <h1>DSA QUEST</h1>
+            <h1 className="brand-title">
+              <img src="/shubdevlogo.png" alt="DSA Quest logo" />
+              <span>DSA QUEST</span>
+            </h1>
             <p className="sheet-subtitle">
               Track every topic, solve every problem, and keep your revision streak alive.
             </p>
@@ -503,7 +507,7 @@ export default function SheetPage() {
               <Sparkles size={16} />
               <span>{displayName}</span>
             </div>
-            <button className="auth-button auth-button-amber sheet-logout" type="button" onClick={handleLogout}>
+            <button className="auth-button auth-button-ghost sheet-logout" type="button" onClick={handleLogout}>
               <LogOut size={18} />
               Logout
             </button>
@@ -662,8 +666,9 @@ export default function SheetPage() {
               );
             })}
           </div>
-        )}
-      </section>
+          )}
+        </section>
+      <SiteFooter />
 
       <NotesModal
         open={Boolean(notesQuestion)}

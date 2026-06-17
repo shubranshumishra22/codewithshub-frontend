@@ -1,6 +1,7 @@
 import { LogOut, Rocket, Trophy } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import SiteFooter from '../components/SiteFooter';
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();
@@ -35,7 +36,7 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <button className="auth-button auth-button-amber dashboard-logout" onClick={handleLogout}>
+          <button className="auth-button auth-button-ghost dashboard-logout" onClick={handleLogout}>
             <LogOut size={18} />
             Logout
           </button>
@@ -58,6 +59,7 @@ export default function DashboardPage() {
           </article>
         </div>
       </section>
+      <SiteFooter />
     </main>
   );
 }

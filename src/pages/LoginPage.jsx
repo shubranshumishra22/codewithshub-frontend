@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Gamepad2, LogIn, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import TerminalBlock from '../components/TerminalBlock';
+import SiteFooter from '../components/SiteFooter';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -47,11 +49,16 @@ export default function LoginPage() {
 
         <header className="auth-header">
           <p className="auth-eyebrow">Level up your DSA journey</p>
-          <h1>DSA QUEST</h1>
+          <h1 className="brand-title">
+            <img src="/shubdevlogo.png" alt="DSA Quest logo" />
+            <span>DSA QUEST</span>
+          </h1>
           <p className="auth-subtitle">
             Enter the arena and continue your coding streak.
           </p>
         </header>
+
+        <TerminalBlock />
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <label>
@@ -91,6 +98,7 @@ export default function LoginPage() {
           </p>
         </div>
       </section>
+      <SiteFooter />
     </main>
   );
 }

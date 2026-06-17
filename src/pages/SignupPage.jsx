@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShieldPlus, Sparkles, UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import SiteFooter from '../components/SiteFooter';
 
 export default function SignupPage() {
   const [username, setUsername] = useState('');
@@ -46,14 +47,17 @@ export default function SignupPage() {
     <main className="auth-shell">
       <section className="auth-card auth-entrance">
         <div className="auth-card-glow" />
-        <div className="auth-badge auth-badge-amber">
+        <div className="auth-badge auth-badge-light">
           <ShieldPlus size={18} />
           <span>NEW PLAYER</span>
         </div>
 
         <header className="auth-header">
           <p className="auth-eyebrow">Join the leaderboard</p>
-          <h1>DSA QUEST</h1>
+          <h1 className="brand-title">
+            <img src="/shubdevlogo.png" alt="DSA Quest logo" />
+            <span>DSA QUEST</span>
+          </h1>
           <p className="auth-subtitle">
             Register your account and start your quest through the Striver A-Z path.
           </p>
@@ -96,7 +100,7 @@ export default function SignupPage() {
             />
           </label>
 
-          <button className="auth-button auth-button-amber" type="submit" disabled={submitting}>
+          <button className="auth-button auth-button-ghost" type="submit" disabled={submitting}>
             <UserPlus size={18} />
             {submitting ? 'Forging account...' : 'Sign Up'}
           </button>
@@ -109,6 +113,7 @@ export default function SignupPage() {
           </p>
         </div>
       </section>
+      <SiteFooter />
     </main>
   );
 }
