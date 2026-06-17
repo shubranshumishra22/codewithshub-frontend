@@ -49,10 +49,7 @@ export default function LoginPage() {
 
         <header className="auth-header">
           <p className="auth-eyebrow">Level up your DSA journey</p>
-          <h1 className="brand-title">
-            <img src="/shubdevlogo.png" alt="DSA Quest logo" />
-            <span>DSA QUEST</span>
-          </h1>
+          <h1>DSA QUEST</h1>
           <p className="auth-subtitle">
             Enter the arena and continue your coding streak.
           </p>

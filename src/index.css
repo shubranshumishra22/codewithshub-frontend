@@ -174,21 +174,6 @@ h6 {
   font-weight: 500;
 }
 
-.brand-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.brand-title img {
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  object-fit: cover;
-  border: 0.5px solid rgba(255, 255, 255, 0.15);
-  flex-shrink: 0;
-}
-
 .site-footer {
   width: min(100%, 1200px);
   display: flex;

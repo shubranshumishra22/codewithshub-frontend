@@ -489,10 +489,7 @@ export default function SheetPage() {
               <BookOpen size={16} />
               <span>STRIVER A-Z SHEET</span>
             </div>
-            <h1 className="brand-title">
-              <img src="/shubdevlogo.png" alt="DSA Quest logo" />
-              <span>DSA QUEST</span>
-            </h1>
+            <h1>DSA QUEST</h1>
             <p className="sheet-subtitle">
               Track every topic, solve every problem, and keep your revision streak alive.
             </p>

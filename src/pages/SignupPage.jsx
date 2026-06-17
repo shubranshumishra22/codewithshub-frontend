@@ -54,10 +54,7 @@ export default function SignupPage() {
 
         <header className="auth-header">
           <p className="auth-eyebrow">Join the leaderboard</p>
-          <h1 className="brand-title">
-            <img src="/shubdevlogo.png" alt="DSA Quest logo" />
-            <span>DSA QUEST</span>
-          </h1>
+          <h1>DSA QUEST</h1>
           <p className="auth-subtitle">
             Register your account and start your quest through the Striver A-Z path.
           </p>
