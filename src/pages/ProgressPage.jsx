@@ -37,7 +37,7 @@ const DIFFICULTY_COLORS = {
   hard: '#111214',
 };
 
-const heatmapColors = ['#242629', '#555', '#999', '#e8eaed'];
+const heatmapColors = ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353'];
 
 function StatCard({ icon, label, value, suffix = '' }) {
   return (

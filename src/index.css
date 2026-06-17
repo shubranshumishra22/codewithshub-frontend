@@ -1134,15 +1134,15 @@ h6 {
 .heatmap-cell {
   aspect-ratio: 1;
   border-radius: 4px;
-  background: #f0f0f0;
-  border: 0.5px solid #e5e5e5;
+  background: #161b22;
+  border: 0.5px solid #242629;
 }
 
-.heatmap-level-0 { background: #f0f0f0; }
-.heatmap-level-1 { background: #d4d4d4; }
-.heatmap-level-2 { background: #737373; }
-.heatmap-level-3 { background: #999; }
-.heatmap-level-4 { background: #e8eaed; }
+.heatmap-level-0 { background: #161b22; }
+.heatmap-level-1 { background: #0e4429; }
+.heatmap-level-2 { background: #006d32; }
+.heatmap-level-3 { background: #26a641; }
+.heatmap-level-4 { background: #39d353; }
 
 .heatmap-legend {
   display: flex;
@@ -1157,7 +1157,7 @@ h6 {
   width: 14px;
   height: 14px;
   border-radius: 4px;
-  border: 0.5px solid #e5e5e5;
+  border: 0.5px solid #242629;
 }
 
 .heatmap-axis {
