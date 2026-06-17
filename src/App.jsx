@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import RevisionTerminal from './components/RevisionTerminal';
 import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import ProgressPage from './pages/ProgressPage';
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <RevisionTerminal />
       </BrowserRouter>
     </AuthProvider>
   );

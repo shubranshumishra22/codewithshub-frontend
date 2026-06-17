@@ -197,6 +197,164 @@ h6 {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.revision-terminal-shell {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 40;
+  display: grid;
+  justify-items: end;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.revision-terminal-panel,
+.revision-terminal-orb {
+  pointer-events: auto;
+}
+
+.revision-terminal-panel {
+  width: min(420px, calc(100vw - 32px));
+  overflow: hidden;
+  border: 0.5px solid #242629;
+  border-radius: 12px;
+  background: #0d0f10;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.4);
+}
+
+.revision-terminal-topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 14px;
+  border-bottom: 0.5px solid #242629;
+  background: #1c1e21;
+  color: rgba(216, 218, 224, 0.55);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+  font-size: 0.75rem;
+}
+
+.revision-terminal-dots {
+  position: absolute;
+  left: 14px;
+  display: inline-flex;
+  gap: 7px;
+}
+
+.revision-terminal-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #333;
+}
+
+.revision-terminal-topbar button {
+  position: absolute;
+  right: 12px;
+  border: 0;
+  background: transparent;
+  color: rgba(216, 218, 224, 0.55);
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.revision-terminal-topbar button:hover {
+  color: #e8eaed;
+}
+
+.revision-terminal-body {
+  min-height: 230px;
+  max-height: 360px;
+  overflow: auto;
+  padding: 16px;
+  color: #d8dae0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+  font-size: 0.8125rem;
+  line-height: 1.8;
+}
+
+.revision-terminal-line {
+  white-space: nowrap;
+}
+
+.revision-terminal-line.is-command {
+  color: #d8dae0;
+}
+
+.revision-terminal-line.is-today {
+  color: #e8eaed;
+}
+
+.revision-terminal-line.is-tomorrow {
+  color: #8a6a2a;
+}
+
+.revision-terminal-line.is-dim {
+  color: rgba(216, 218, 224, 0.42);
+}
+
+.revision-terminal-prompt {
+  color: rgba(216, 218, 224, 0.42);
+}
+
+.revision-terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  margin-left: 2px;
+  background: #e8eaed;
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+
+.revision-terminal-orb {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border: 0.5px solid #242629;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(57, 211, 83, 0.16), transparent 55%),
+    #0d0f10;
+  color: #e8eaed;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 0 rgba(57, 211, 83, 0.32),
+    0 12px 34px rgba(0, 0, 0, 0.35);
+  animation: revisionOrbPulse 1.8s ease-in-out infinite;
+}
+
+.revision-terminal-orb::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border: 0.5px solid rgba(57, 211, 83, 0.28);
+  border-radius: inherit;
+}
+
+.revision-terminal-orb-prompt {
+  position: absolute;
+  top: 16px;
+  left: 19px;
+  color: rgba(216, 218, 224, 0.45);
+  font-size: 0.75rem;
+}
+
+.revision-terminal-orb-count {
+  color: #39d353;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
 .auth-subtitle,
 .dashboard-card p,
 .auth-footer p,
@@ -1208,6 +1366,20 @@ h6 {
   }
 }
 
+@keyframes revisionOrbPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(57, 211, 83, 0.3),
+      0 12px 34px rgba(0, 0, 0, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 0 10px rgba(57, 211, 83, 0),
+      0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+}
+
 @media (max-width: 960px) {
   .progress-overall-grid,
   .donut-layout,
@@ -1225,6 +1397,20 @@ h6 {
 }
 
 @media (max-width: 640px) {
+  .revision-terminal-shell {
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .revision-terminal-panel {
+    width: calc(100vw - 28px);
+  }
+
+  .revision-terminal-orb {
+    width: 60px;
+    height: 60px;
+  }
+
   .auth-card,
   .dashboard-card,
   .auth-loading-card,
