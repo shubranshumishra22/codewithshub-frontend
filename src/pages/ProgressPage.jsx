@@ -268,7 +268,6 @@ export default function ProgressPage() {
             <p>
               Track your Striver A-Z journey with live stats, topic mastery, revision heat, and difficulty split.
             </p>
-            <div className="progress-player-badge">{user?.user_metadata?.username || user?.email?.split('@')[0] || 'Quest Player'}</div>
           </div>
           <Link className="progress-back-button" to="/">
             <ArrowLeft size={16} />

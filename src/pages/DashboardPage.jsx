@@ -1,21 +1,9 @@
-import { LogOut, Rocket, Trophy } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { Rocket, Trophy } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SiteFooter from '../components/SiteFooter';
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth();
-
-  const handleLogout = async () => {
-    const { error } = await logout();
-
-    if (error) {
-      toast.error(error.message || 'Unable to log out right now.');
-      return;
-    }
-
-    toast.success('Logged out successfully.');
-  };
+  const { user } = useAuth();
 
   const displayName =
     user?.user_metadata?.username || user?.email?.split('@')[0] || 'Quest Player';
@@ -35,11 +23,6 @@ export default function DashboardPage() {
               clearing the leaderboard.
             </p>
           </div>
-
-          <button className="auth-button auth-button-ghost dashboard-logout" onClick={handleLogout}>
-            <LogOut size={18} />
-            Logout
-          </button>
         </div>
 
         <div className="dashboard-stats">

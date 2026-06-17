@@ -4,15 +4,11 @@ import {
   BookOpen,
   ChevronDown,
   FilePenLine,
-  LogOut,
   Search,
-  Sparkles,
   Save,
-  Trophy,
   X,
 } from 'lucide-react';
 import { format, isBefore, parseISO } from 'date-fns';
-import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient';
 import { apiDelete, apiGet, apiPost } from '../lib/apiClient';
@@ -111,7 +107,7 @@ function RevisionBadge({ dueLabel }) {
 }
 
 export default function SheetPage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [openTopicId, setOpenTopicId] = useState(null);
@@ -439,17 +435,6 @@ export default function SheetPage() {
     };
   }, [progressByQuestion, topicsQuery.data]);
 
-  const handleLogout = async () => {
-    const { error } = await logout();
-
-    if (error) {
-      toast.error(error.message || 'Unable to log out right now.');
-      return;
-    }
-
-    toast.success('Logged out successfully.');
-  };
-
   const openNotes = (question) => {
     setNotesQuestion(question);
     setNotesDraft(question.notes || '');
@@ -477,8 +462,6 @@ export default function SheetPage() {
 
   const isLoading = sheetQuery.isLoading || topicsQuery.isLoading || progressQuery.isLoading;
   const hasError = sheetQuery.error || topicsQuery.error || progressQuery.error;
-  const displayName =
-    user?.user_metadata?.username || user?.email?.split('@')[0] || 'Quest Player';
 
   return (
     <main className="sheet-shell">
@@ -493,21 +476,6 @@ export default function SheetPage() {
             <p className="sheet-subtitle">
               Track every topic, solve every problem, and keep your revision streak alive.
             </p>
-          </div>
-
-          <div className="sheet-header-actions">
-            <Link className="sheet-progress-link" to="/progress">
-              <Trophy size={18} />
-              Progress Dashboard
-            </Link>
-            <div className="sheet-hero-badge">
-              <Sparkles size={16} />
-              <span>{displayName}</span>
-            </div>
-            <button className="auth-button auth-button-ghost sheet-logout" type="button" onClick={handleLogout}>
-              <LogOut size={18} />
-              Logout
-            </button>
           </div>
         </div>
 

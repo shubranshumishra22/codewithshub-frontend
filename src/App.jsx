@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import FloatingNavbar from './components/FloatingNavbar';
 import RevisionTerminal from './components/RevisionTerminal';
 import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
@@ -17,6 +18,7 @@ export default function App() {
             path="/"
             element={
               <ProtectedRoute>
+                <FloatingNavbar />
                 <SheetPage />
               </ProtectedRoute>
             }
@@ -25,6 +27,7 @@ export default function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
+                <FloatingNavbar />
                 <DashboardPage />
               </ProtectedRoute>
             }
@@ -33,6 +36,7 @@ export default function App() {
             path="/progress"
             element={
               <ProtectedRoute>
+                <FloatingNavbar />
                 <ProgressPage />
               </ProtectedRoute>
             }
