@@ -30,12 +30,12 @@ export default function TerminalBlock() {
   }, []);
 
   return (
-    <section className="mt-7 bg-[#0a0a0a] border border-white/10 rounded-xl overflow-hidden">
-      <div className="relative bg-[#111] border-b border-white/10 px-4 py-3 flex items-center gap-2">
+    <section className="mt-7 bg-[#111214] border border-[#242629] rounded-xl overflow-hidden">
+      <div className="relative bg-[#1c1e21] border-b border-[#242629] px-4 py-3 flex items-center gap-2">
         <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
         <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
         <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
-        <span className="absolute left-1/2 -translate-x-1/2 text-white/25 text-xs font-mono">
+        <span className="absolute left-1/2 -translate-x-1/2 text-[#d8dae0]/40 text-xs font-mono">
           dsa-quest.sh
         </span>
       </div>
@@ -49,8 +49,8 @@ export default function TerminalBlock() {
           if (line.type === 'command') {
             return (
               <div key={`${line.type}-${index}`} className="leading-loose">
-                <span className="text-white/25">$ </span>
-                <span className="text-white">{line.text}</span>
+                <span className="text-[#d8dae0]/40">$ </span>
+                <span className="text-[#e8eaed]">{line.text}</span>
               </div>
             );
           }
@@ -59,14 +59,14 @@ export default function TerminalBlock() {
             <div
               key={`${line.type}-${index}`}
               className={`pl-5 text-xs leading-loose ${
-                line.type === 'output-highlight' ? 'text-white' : 'text-white/35'
+                line.type === 'output-highlight' ? 'text-[#e8eaed]' : 'text-[#d8dae0]/60'
               }`}
             >
               {line.text}
             </div>
           );
         })}
-        <span className="inline-block w-2 h-3.5 bg-white align-middle animate-[blink_1s_step-end_infinite]" />
+        <span className="inline-block w-2 h-3.5 bg-[#e8eaed] align-middle animate-[blink_1s_step-end_infinite]" />
       </div>
     </section>
   );

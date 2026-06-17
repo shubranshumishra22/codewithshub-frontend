@@ -34,10 +34,10 @@ const STRIVER_SHEET_NAME = 'Striver A-Z';
 const DIFFICULTY_COLORS = {
   easy: '#d4d4d4',
   medium: '#737373',
-  hard: '#000000',
+  hard: '#111214',
 };
 
-const heatmapColors = ['#f0f0f0', '#d4d4d4', '#737373', '#000000'];
+const heatmapColors = ['#242629', '#555', '#999', '#e8eaed'];
 
 function StatCard({ icon, label, value, suffix = '' }) {
   return (
@@ -92,7 +92,7 @@ function CircularProgressRing({ percentage }) {
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
-          stroke="#000000"
+          stroke="#e8eaed"
         />
       </svg>
       <div className="progress-ring-center">
@@ -328,7 +328,7 @@ export default function ProgressPage() {
                         className="topic-bar-fill"
                         style={{
                           width: `${topic.percentage}%`,
-                          background: '#000000',
+                          background: '#e8eaed',
                         }}
                       />
                     </div>
@@ -370,10 +370,10 @@ export default function ProgressPage() {
                       </Pie>
                       <Tooltip
                         contentStyle={{
-                          background: '#ffffff',
-                          border: '0.5px solid #e5e5e5',
+                          background: '#1c1e21',
+                          border: '0.5px solid #242629',
                           borderRadius: '12px',
-                          color: '#000000',
+                          color: '#e8eaed',
                         }}
                       />
                       <Legend />

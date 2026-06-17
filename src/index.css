@@ -4,17 +4,18 @@
 
 :root {
   color-scheme: dark;
-  --dark: #0a0a0a;
-  --dark-card: #111;
-  --light: #fff;
+  --dark: #111214;
+  --dark-card: #1c1e21;
+  --light: #1c1e21;
   --surface: #f5f5f5;
-  --line-dark: rgba(255, 255, 255, 0.1);
-  --line-light: #e5e5e5;
-  --text-dark: #fff;
-  --muted-dark: rgba(255, 255, 255, 0.5);
-  --soft-dark: rgba(255, 255, 255, 0.25);
-  --text-light: #000;
-  --muted-light: #555;
+  --line-dark: #242629;
+  --line-light: #242629;
+  --heading-dark: #e8eaed;
+  --text-dark: #d8dae0;
+  --muted-dark: rgba(216, 218, 224, 0.68);
+  --soft-dark: rgba(216, 218, 224, 0.42);
+  --text-light: #d8dae0;
+  --muted-light: #d8dae0;
   --soft-light: #999;
 }
 
@@ -141,7 +142,7 @@ h6 {
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: #fff;
+  background: #e8eaed;
   display: inline-block;
 }
 
@@ -168,7 +169,7 @@ h6 {
 .sheet-header h1,
 .progress-hero h1 {
   margin: 0;
-  color: #fff;
+  color: #e8eaed;
   font-size: clamp(2.25rem, 8vw, 3rem);
   line-height: 1.1;
   font-weight: 500;
@@ -187,7 +188,7 @@ h6 {
 }
 
 .site-footer a {
-  color: #fff;
+  color: #e8eaed;
   font-weight: 500;
   transition: color 0.18s ease;
 }
@@ -226,7 +227,7 @@ h6 {
 }
 
 .auth-form span {
-  color: #fff;
+  color: #e8eaed;
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -237,8 +238,8 @@ h6 {
   padding: 14px 16px;
   border: 0.5px solid var(--line-dark);
   border-radius: 8px;
-  background: #0a0a0a;
-  color: #fff;
+  background: #111214;
+  color: #d8dae0;
   outline: none;
   transition:
     border-color 0.2s ease,
@@ -254,7 +255,7 @@ h6 {
 .auth-form input:focus,
 .notes-textarea:focus {
   border-color: rgba(255, 255, 255, 0.5);
-  background: #111;
+  background: #1c1e21;
 }
 
 .auth-button {
@@ -266,8 +267,8 @@ h6 {
   padding: 10px 16px;
   border: 0;
   border-radius: 8px;
-  background: #fff;
-  color: #000;
+  background: #e8eaed;
+  color: #111214;
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0;
@@ -313,7 +314,7 @@ h6 {
 }
 
 .auth-footer a {
-  color: #fff;
+  color: #e8eaed;
   font-weight: 500;
 }
 
@@ -371,10 +372,10 @@ h6 {
 .heatmap-card,
 .donut-card,
 .difficulty-summary article {
-  background: #fff;
-  border: 0.5px solid #e5e5e5;
+  background: #1c1e21;
+  border: 0.5px solid #242629;
   border-radius: 12px;
-  color: #000;
+  color: #d8dae0;
 }
 
 .dashboard-stats article {
@@ -414,7 +415,7 @@ h6 {
 .progress-ring-center strong {
   display: block;
   margin-top: 4px;
-  color: #000;
+  color: #e8eaed;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     monospace;
   font-size: 1.125rem;
@@ -432,8 +433,8 @@ h6 {
   padding: 24px 16px 40px;
   display: grid;
   place-items: start center;
-  background: #0a0a0a;
-  color: #fff;
+  background: #111214;
+  color: #d8dae0;
 }
 
 .sheet-card,
@@ -458,13 +459,13 @@ h6 {
   align-items: flex-start;
   gap: 24px;
   margin-bottom: 24px;
-  color: #fff;
+  color: #d8dae0;
 }
 
 .sheet-header h1,
 .progress-hero h1 {
   margin: 16px 0 10px;
-  color: #fff;
+  color: #e8eaed;
 }
 
 .sheet-subtitle,
@@ -482,7 +483,7 @@ h6 {
 
 .sheet-kicker::before,
 .progress-kicker::before {
-  background: #fff;
+  background: #e8eaed;
 }
 
 .sheet-header-actions {
@@ -509,7 +510,7 @@ h6 {
 
 .sheet-progress-link:hover,
 .progress-back-button:hover {
-  color: #fff;
+  color: #e8eaed;
   border-color: rgba(255, 255, 255, 0.5);
 }
 
@@ -529,9 +530,9 @@ h6 {
 .progress-player-badge {
   gap: 8px;
   padding: 4px 12px;
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
-  background: #111;
-  color: rgba(255, 255, 255, 0.5);
+  border: 0.5px solid #242629;
+  background: #1c1e21;
+  color: #d8dae0;
 }
 
 .sheet-logout {
@@ -551,9 +552,9 @@ h6 {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border: 0.5px solid #e5e5e5;
+  border: 0.5px solid #242629;
   border-radius: 12px;
-  background: #fff;
+  background: #1c1e21;
   margin-bottom: 24px;
 }
 
@@ -562,7 +563,7 @@ h6 {
   background: transparent;
   border: none;
   outline: none;
-  color: #000;
+  color: #d8dae0;
 }
 
 .sheet-search input::placeholder {
@@ -581,7 +582,7 @@ h6 {
 
 .sheet-state-error,
 .progress-error-card {
-  color: #000;
+  color: #e8eaed;
 }
 
 .topics-accordion {
@@ -590,14 +591,14 @@ h6 {
 }
 
 .topic-card {
-  border: 0.5px solid #e5e5e5;
+  border: 0.5px solid #242629;
   border-radius: 12px;
-  background: #fff;
+  background: #1c1e21;
   overflow: hidden;
 }
 
 .topic-card.is-open {
-  border-color: #000;
+  border-color: #555;
 }
 
 .topic-header {
@@ -607,9 +608,9 @@ h6 {
   justify-content: space-between;
   gap: 20px;
   text-align: left;
-  background: #fff;
+  background: #1c1e21;
   border: none;
-  color: #000;
+  color: #d8dae0;
   padding: 12px 16px;
   cursor: pointer;
 }
@@ -622,7 +623,7 @@ h6 {
 
 .topic-header-left h2 {
   margin: 0;
-  color: #000;
+  color: #e8eaed;
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -630,7 +631,7 @@ h6 {
 .topic-header-left p {
   margin: 4px 0 0;
   font-size: 0.75rem;
-  color: #555;
+  color: #d8dae0;
 }
 
 .topic-header-right {
@@ -644,8 +645,8 @@ h6 {
   min-width: 64px;
   padding: 8px 10px;
   border-radius: 8px;
-  background: #f5f5f5;
-  border: 0.5px solid #e5e5e5;
+  background: #111214;
+  border: 0.5px solid #242629;
   text-align: center;
 }
 
@@ -660,7 +661,7 @@ h6 {
 .topic-xp-badge strong {
   display: block;
   margin-top: 3px;
-  color: #000;
+  color: #e8eaed;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     monospace;
   font-size: 0.875rem;
@@ -669,9 +670,9 @@ h6 {
 
 .topic-solved-badge {
   padding: 2px 12px;
-  border: 0.5px solid #e5e5e5;
-  background: #f5f5f5;
-  color: #666;
+  border: 0.5px solid #242629;
+  background: #111214;
+  color: #d8dae0;
 }
 
 .topic-chevron {
@@ -714,8 +715,8 @@ h6 {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   text-align: left;
-  border-top: 0.5px solid #f0f0f0;
-  border-bottom: 0.5px solid #f0f0f0;
+  border-top: 0.5px solid #242629;
+  border-bottom: 0.5px solid #242629;
 }
 
 .question-table tbody tr {
@@ -723,13 +724,13 @@ h6 {
 }
 
 .question-table tbody tr:hover {
-  background: #fafafa;
+  background: #242629;
 }
 
 .question-table tbody td {
   padding: 12px 16px;
   vertical-align: middle;
-  border-bottom: 0.5px solid #f0f0f0;
+  border-bottom: 0.5px solid #242629;
 }
 
 .question-table tbody tr:last-child td {
@@ -737,7 +738,7 @@ h6 {
 }
 
 .question-table tbody tr.is-solved {
-  background: #fff;
+  background: #1c1e21;
 }
 
 .checkbox-column {
@@ -766,15 +767,15 @@ h6 {
   height: 16px;
   border-radius: 4px;
   border: 0.5px solid #d4d4d4;
-  background: #fff;
+  background: #1c1e21;
   transition:
     background 0.18s ease,
     border-color 0.18s ease;
 }
 
 .quest-checkbox input:checked + span {
-  background: #000;
-  border-color: #000;
+  background: #e8eaed;
+  border-color: #e8eaed;
 }
 
 .quest-checkbox input:checked + span::after {
@@ -782,8 +783,8 @@ h6 {
   position: absolute;
   width: 4px;
   height: 8px;
-  border-right: 1.5px solid #fff;
-  border-bottom: 1.5px solid #fff;
+  border-right: 1.5px solid #111214;
+  border-bottom: 1.5px solid #111214;
   transform: rotate(40deg);
   left: 6px;
   top: 2px;
@@ -795,7 +796,7 @@ h6 {
 }
 
 .question-title {
-  color: #000;
+  color: #d8dae0;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.4;
@@ -807,7 +808,7 @@ h6 {
 }
 
 .question-title:hover {
-  color: #000;
+  color: #e8eaed;
 }
 
 .question-title-static {
@@ -832,20 +833,20 @@ h6 {
 
 .difficulty-easy {
   color: #999;
-  background: #f5f5f5;
-  border: 0.5px solid #e5e5e5;
+  background: #242629;
+  border: 0.5px solid #242629;
 }
 
 .difficulty-medium {
-  color: #555;
-  background: #f0f0f0;
-  border: 0.5px solid #d4d4d4;
+  color: #d8dae0;
+  background: #242629;
+  border: 0.5px solid #555;
 }
 
 .difficulty-hard {
-  color: #fff;
-  background: #000;
-  border: 0.5px solid #000;
+  color: #111214;
+  background: #e8eaed;
+  border: 0.5px solid #e8eaed;
 }
 
 .notes-button {
@@ -862,21 +863,21 @@ h6 {
 }
 
 .notes-button:hover {
-  color: #000;
+  color: #e8eaed;
 }
 
 .revision-chip {
-  color: #fff;
-  background: #000;
-  border: 0.5px solid #000;
+  color: #111214;
+  background: #e8eaed;
+  border: 0.5px solid #e8eaed;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     monospace;
 }
 
 .revision-chip-empty {
   color: #999;
-  border-color: #e5e5e5;
-  background: #f5f5f5;
+  border-color: #242629;
+  background: #111214;
 }
 
 .sheet-empty-row {
@@ -898,8 +899,8 @@ h6 {
 
 .notes-modal {
   width: min(100%, 520px);
-  background: #111;
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  background: #1c1e21;
+  border: 0.5px solid #242629;
   border-radius: 12px;
 }
 
@@ -921,7 +922,7 @@ h6 {
 
 .notes-modal h3 {
   margin: 0;
-  color: #fff;
+  color: #e8eaed;
   font-size: 1.25rem;
   line-height: 1.2;
 }
@@ -967,7 +968,7 @@ h6 {
   margin: 0 auto 18px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.1);
-  border-top-color: #fff;
+  border-top-color: #e8eaed;
   animation: spin 1s linear infinite;
 }
 
@@ -1082,7 +1083,7 @@ h6 {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #000;
+  color: #e8eaed;
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -1140,8 +1141,8 @@ h6 {
 .heatmap-level-0 { background: #f0f0f0; }
 .heatmap-level-1 { background: #d4d4d4; }
 .heatmap-level-2 { background: #737373; }
-.heatmap-level-3 { background: #000; }
-.heatmap-level-4 { background: #000; }
+.heatmap-level-3 { background: #999; }
+.heatmap-level-4 { background: #e8eaed; }
 
 .heatmap-legend {
   display: flex;
