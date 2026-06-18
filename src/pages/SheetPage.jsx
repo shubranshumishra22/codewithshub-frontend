@@ -91,7 +91,7 @@ function formatDueDate(dateString) {
   return `Next • ${label}`;
 }
 
-function RevisionCell({ question, onComplete, isExpanded, onToggle }) {
+function RevisionCell({ question, onComplete, onUncomplete, isExpanded, onToggle }) {
   const dueLabel = formatDueDate(question.nextRevisionDue);
   const hasRevisions = question.allRevisions.length > 0;
 
@@ -116,14 +116,14 @@ function RevisionCell({ question, onComplete, isExpanded, onToggle }) {
       </div>
       {isExpanded && (
         <div className="revision-cell-body">
-          <RevisionCheckboxes revisions={question.allRevisions} onComplete={onComplete} />
+          <RevisionCheckboxes revisions={question.allRevisions} onComplete={onComplete} onUncomplete={onUncomplete} />
         </div>
       )}
     </div>
   );
 }
 
-function RevisionCheckboxes({ revisions, onComplete }) {
+function RevisionCheckboxes({ revisions, onComplete, onUncomplete }) {
   const revisionByDay = useMemo(() => {
     const map = {};
     (revisions || []).forEach((r) => { map[r.revision_day] = r; });
@@ -138,20 +138,25 @@ function RevisionCheckboxes({ revisions, onComplete }) {
         const checked = exists && revision.is_completed;
         const now = new Date();
         const dueDate = revision ? new Date(revision.due_date + 'T00:00:00') : null;
-        const canCheck = exists && !revision.is_completed && dueDate && now >= dueDate;
+        const canInteract = exists && (checked || (dueDate && now >= dueDate));
 
         return (
           <label
             key={day}
-            className={`revision-cb${exists && checked ? ' revision-cb-done' : ''}${canCheck ? ' revision-cb-ready' : ''}${!exists ? ' revision-cb-missing' : ''}`}
+            className={`revision-cb${exists && checked ? ' revision-cb-done' : ''}${canInteract && !checked ? ' revision-cb-ready' : ''}${!exists ? ' revision-cb-missing' : ''}`}
             title={revision ? `Due: ${revision.due_date} (day +${day})` : 'Not scheduled'}
           >
             <input
               type="checkbox"
               checked={checked}
-              disabled={!canCheck}
+              disabled={!canInteract}
               onChange={() => {
-                if (revision) onComplete(revision.id);
+                if (!revision) return;
+                if (checked) {
+                  onUncomplete(revision.id);
+                } else {
+                  onComplete(revision.id);
+                }
               }}
             />
             <span>+{day}</span>
@@ -384,6 +389,35 @@ export default function SheetPage() {
         queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], context.previous);
       }
       toast.error(error.message || 'Could not complete revision.');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+    },
+  });
+
+  const uncompleteRevisionMutation = useMutation({
+    mutationFn: async (revisionScheduleId) => {
+      const response = await apiPost('/revision/uncomplete', { revision_schedule_id: revisionScheduleId });
+      return response.data.revision;
+    },
+    onMutate: async (revisionScheduleId) => {
+      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      const previous = queryClient.getQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')]);
+      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], (current) => {
+        if (!Array.isArray(current)) return current;
+        return current.map((r) =>
+          r.id === revisionScheduleId
+            ? { ...r, is_completed: false, completed_at: null }
+            : r
+        );
+      });
+      return { previous };
+    },
+    onError: (error, _revisionId, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], context.previous);
+      }
+      toast.error(error.message || 'Could not uncomplete revision.');
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
@@ -713,6 +747,7 @@ export default function SheetPage() {
                                     <RevisionCell
                                       question={question}
                                       onComplete={(id) => completeRevisionMutation.mutate(id)}
+                                      onUncomplete={(id) => uncompleteRevisionMutation.mutate(id)}
                                       isExpanded={revisionViewQuestionId === question.id}
                                       onToggle={toggleRevisionView}
                                     />
