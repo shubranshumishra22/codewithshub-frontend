@@ -8,7 +8,6 @@ import {
   Save,
   X,
 } from 'lucide-react';
-import { format, isBefore, parseISO } from 'date-fns';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient';
 import { apiDelete, apiGet, apiPost } from '../lib/apiClient';
@@ -16,31 +15,12 @@ import { useAuth } from '../context/AuthContext';
 import SiteFooter from '../components/SiteFooter';
 
 const STRIVER_SHEET_NAME = 'Striver A-Z';
+const REVISION_DAYS = [1, 3, 7, 15, 30, 60, 120];
 
 const difficultyMeta = {
   easy: { label: 'Common', className: 'difficulty-easy' },
   medium: { label: 'Rare', className: 'difficulty-medium' },
   hard: { label: 'Legendary', className: 'difficulty-hard' },
-};
-
-const formatDueDate = (dateString) => {
-  if (!dateString) {
-    return null;
-  }
-
-  const dueDate = parseISO(dateString);
-  const today = new Date();
-  const label = format(dueDate, 'd MMM');
-
-  if (format(dueDate, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd')) {
-    return `Due today • ${label}`;
-  }
-
-  if (isBefore(dueDate, today)) {
-    return `Overdue • ${label}`;
-  }
-
-  return `Next • ${label}`;
 };
 
 function Checkbox({ checked, onChange, disabled }) {
@@ -98,12 +78,43 @@ function NotesModal({ open, questionTitle, value, onChange, onClose, onSave, sav
   );
 }
 
-function RevisionBadge({ dueLabel }) {
-  if (!dueLabel) {
-    return <span className="revision-chip revision-chip-empty">No revision due</span>;
-  }
+function RevisionCheckboxes({ revisions, onComplete }) {
+  const revisionByDay = useMemo(() => {
+    const map = {};
+    (revisions || []).forEach((r) => { map[r.revision_day] = r; });
+    return map;
+  }, [revisions]);
 
-  return <span className="revision-chip">{dueLabel}</span>;
+  return (
+    <div className="revision-checkboxes">
+      {REVISION_DAYS.map((day) => {
+        const revision = revisionByDay[day];
+        const exists = Boolean(revision);
+        const checked = exists && revision.is_completed;
+        const now = new Date();
+        const dueDate = revision ? new Date(revision.due_date + 'T00:00:00') : null;
+        const canCheck = exists && !revision.is_completed && dueDate && now >= dueDate;
+
+        return (
+          <label
+            key={day}
+            className={`revision-cb${exists && checked ? ' revision-cb-done' : ''}${canCheck ? ' revision-cb-ready' : ''}${!exists ? ' revision-cb-missing' : ''}`}
+            title={revision ? `Due: ${revision.due_date} (day +${day})` : 'Not scheduled'}
+          >
+            <input
+              type="checkbox"
+              checked={checked}
+              disabled={!canCheck}
+              onChange={() => {
+                if (revision) onComplete(revision.id);
+              }}
+            />
+            <span>+{day}</span>
+          </label>
+        );
+      })}
+    </div>
+  );
 }
 
 export default function SheetPage() {
@@ -159,11 +170,10 @@ export default function SheetPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('revision_schedule')
-        .select('question_id, due_date, is_completed, revision_day')
+        .select('id, question_id, due_date, is_completed, revision_day')
         .eq('user_id', user.id)
         .in('question_id', questionIds)
-        .eq('is_completed', false)
-        .order('due_date', { ascending: true });
+        .order('revision_day', { ascending: true });
 
       if (error) {
         throw error;
@@ -301,6 +311,35 @@ export default function SheetPage() {
     },
   });
 
+  const completeRevisionMutation = useMutation({
+    mutationFn: async (revisionScheduleId) => {
+      const response = await apiPost('/revision/complete', { revision_schedule_id: revisionScheduleId });
+      return response.data.revision;
+    },
+    onMutate: async (revisionScheduleId) => {
+      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      const previous = queryClient.getQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')]);
+      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], (current) => {
+        if (!Array.isArray(current)) return current;
+        return current.map((r) =>
+          r.id === revisionScheduleId
+            ? { ...r, is_completed: true, completed_at: new Date().toISOString() }
+            : r
+        );
+      });
+      return { previous };
+    },
+    onError: (error, _revisionId, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], context.previous);
+      }
+      toast.error(error.message || 'Could not complete revision.');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+    },
+  });
+
   const progressMutationPending =
     markSolvedMutation.isPending || unmarkSolvedMutation.isPending;
 
@@ -379,12 +418,10 @@ export default function SheetPage() {
 
   const revisionByQuestion = useMemo(() => {
     return (revisionQuery.data || []).reduce((acc, revision) => {
-      const current = acc[revision.question_id];
-
-      if (!current || revision.due_date < current.due_date) {
-        acc[revision.question_id] = revision;
+      if (!acc[revision.question_id]) {
+        acc[revision.question_id] = [];
       }
-
+      acc[revision.question_id].push(revision);
       return acc;
     }, {});
   }, [revisionQuery.data]);
@@ -397,14 +434,21 @@ export default function SheetPage() {
       .map((topic) => {
         const questions = topic.questions.map((question) => {
           const progress = progressByQuestion[question.id];
-          const revision = revisionByQuestion[question.id];
+          const allRevisions = revisionByQuestion[question.id] || [];
+          const revisionByDay = {};
+          allRevisions.forEach((r) => { revisionByDay[r.revision_day] = r; });
+          const allRevisionsCompleted = REVISION_DAYS.every((day) => {
+            const rev = revisionByDay[day];
+            return rev?.is_completed;
+          });
 
           return {
             ...question,
             isSolved: Boolean(progress?.is_solved),
             notes: progress?.notes || '',
             solvedAt: progress?.solved_at || null,
-            nextRevisionDue: revision?.due_date || null,
+            allRevisions,
+            allRevisionsCompleted,
           };
         });
 
@@ -565,10 +609,10 @@ export default function SheetPage() {
                             {visibleQuestions.map((question) => {
                               const difficulty = difficultyMeta[question.difficulty] || difficultyMeta.medium;
                               const noteCount = (question.notes || '').trim().length;
-                              const dueLabel = formatDueDate(question.nextRevisionDue);
+                              const rowClass = `${question.isSolved ? 'is-solved' : ''}${question.allRevisionsCompleted ? ' is-revision-done' : ''}`;
 
                               return (
-                                <tr key={question.id} className={question.isSolved ? 'is-solved' : ''}>
+                                <tr key={question.id} className={rowClass}>
                                   <td className="checkbox-column" data-label="Done">
                                     <Checkbox
                                       checked={question.isSolved}
@@ -596,7 +640,6 @@ export default function SheetPage() {
                                     ) : (
                                       <span className="question-title question-title-static">{question.title}</span>
                                     )}
-                                    {!question.leetcode_url ? <span className="question-link-hint">No LeetCode link provided</span> : null}
                                   </td>
                                   <td data-label="Difficulty">
                                     <span className={`difficulty-badge ${difficulty.className}`}>
@@ -610,7 +653,10 @@ export default function SheetPage() {
                                     </button>
                                   </td>
                                   <td data-label="Revision">
-                                    <RevisionBadge dueLabel={dueLabel} />
+                                    <RevisionCheckboxes
+                                      revisions={question.allRevisions}
+                                      onComplete={(id) => completeRevisionMutation.mutate(id)}
+                                    />
                                   </td>
                                 </tr>
                               );
