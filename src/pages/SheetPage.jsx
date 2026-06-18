@@ -78,6 +78,51 @@ function NotesModal({ open, questionTitle, value, onChange, onClose, onSave, sav
   );
 }
 
+const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function formatDueDate(dateString) {
+  if (!dateString) return null;
+  const dueDate = new Date(dateString + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const label = `${dueDate.getDate()} ${MONTHS_SHORT[dueDate.getMonth()]}`;
+  if (dueDate.getTime() === today.getTime()) return `Due today • ${label}`;
+  if (dueDate < today) return `Overdue • ${label}`;
+  return `Next • ${label}`;
+}
+
+function RevisionCell({ question, onComplete, isExpanded, onToggle }) {
+  const dueLabel = formatDueDate(question.nextRevisionDue);
+  const hasRevisions = question.allRevisions.length > 0;
+
+  return (
+    <div className="revision-cell">
+      <div className="revision-cell-header">
+        {dueLabel ? (
+          <span className="revision-chip">{dueLabel}</span>
+        ) : (
+          <span className="revision-chip revision-chip-empty">No revision due</span>
+        )}
+        {hasRevisions && (
+          <button
+            className="revision-expand-btn"
+            type="button"
+            onClick={() => onToggle(question.id)}
+            aria-label={isExpanded ? 'Collapse' : 'Expand'}
+          >
+            <ChevronDown size={14} className={`revision-chevron ${isExpanded ? 'is-open' : ''}`} />
+          </button>
+        )}
+      </div>
+      {isExpanded && (
+        <div className="revision-cell-body">
+          <RevisionCheckboxes revisions={question.allRevisions} onComplete={onComplete} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 function RevisionCheckboxes({ revisions, onComplete }) {
   const revisionByDay = useMemo(() => {
     const map = {};
@@ -122,8 +167,13 @@ export default function SheetPage() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [openTopicId, setOpenTopicId] = useState(null);
+  const [revisionViewQuestionId, setRevisionViewQuestionId] = useState(null);
   const [notesQuestion, setNotesQuestion] = useState(null);
   const [notesDraft, setNotesDraft] = useState('');
+
+  const toggleRevisionView = (questionId) => {
+    setRevisionViewQuestionId((prev) => (prev === questionId ? null : questionId));
+  };
 
   const sheetQuery = useQuery({
     queryKey: ['sheet-catalog', STRIVER_SHEET_NAME],
@@ -442,6 +492,12 @@ export default function SheetPage() {
             return rev?.is_completed;
           });
 
+          const pendingRevisions = allRevisions.filter((r) => !r.is_completed);
+          const nextRevisionDue =
+            pendingRevisions.length > 0
+              ? pendingRevisions.sort((a, b) => a.due_date.localeCompare(b.due_date))[0].due_date
+              : null;
+
           return {
             ...question,
             isSolved: Boolean(progress?.is_solved),
@@ -449,6 +505,7 @@ export default function SheetPage() {
             solvedAt: progress?.solved_at || null,
             allRevisions,
             allRevisionsCompleted,
+            nextRevisionDue,
           };
         });
 
@@ -653,9 +710,11 @@ export default function SheetPage() {
                                     </button>
                                   </td>
                                   <td data-label="Revision">
-                                    <RevisionCheckboxes
-                                      revisions={question.allRevisions}
+                                    <RevisionCell
+                                      question={question}
                                       onComplete={(id) => completeRevisionMutation.mutate(id)}
+                                      isExpanded={revisionViewQuestionId === question.id}
+                                      onToggle={toggleRevisionView}
                                     />
                                   </td>
                                 </tr>
