@@ -1128,6 +1128,13 @@ h6 {
   padding: 4px 0;
 }
 
+.revision-syncing-text {
+  display: block;
+  font-size: 0.7rem;
+  color: #999;
+  padding: 4px 0;
+}
+
 .sheet-empty-row {
   padding: 18px;
   text-align: center;

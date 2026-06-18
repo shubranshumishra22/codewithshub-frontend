@@ -91,9 +91,18 @@ function formatDueDate(dateString) {
   return `Next • ${label}`;
 }
 
-function RevisionCell({ question, onComplete, onUncomplete, isExpanded, onToggle }) {
+function RevisionCell({ question, onComplete, onUncomplete, onSyncRevision, isExpanded, onToggle }) {
   const dueLabel = formatDueDate(question.nextRevisionDue);
   const hasRevisions = question.allRevisions.length > 0;
+  const needsSync = question.isSolved && !hasRevisions;
+  const showButton = hasRevisions || needsSync;
+
+  const handleToggle = () => {
+    if (needsSync && !isExpanded) {
+      onSyncRevision(question.id);
+    }
+    onToggle(question.id);
+  };
 
   return (
     <div className="revision-cell">
@@ -103,11 +112,11 @@ function RevisionCell({ question, onComplete, onUncomplete, isExpanded, onToggle
         ) : (
           <span className="revision-chip revision-chip-empty">No revision due</span>
         )}
-        {hasRevisions && (
+        {showButton && (
           <button
             className="revision-expand-btn"
             type="button"
-            onClick={() => onToggle(question.id)}
+            onClick={handleToggle}
             aria-label={isExpanded ? 'Collapse' : 'Expand'}
           >
             <ChevronDown size={14} className={`revision-chevron ${isExpanded ? 'is-open' : ''}`} />
@@ -116,7 +125,11 @@ function RevisionCell({ question, onComplete, onUncomplete, isExpanded, onToggle
       </div>
       {isExpanded && (
         <div className="revision-cell-body">
-          <RevisionCheckboxes revisions={question.allRevisions} onComplete={onComplete} onUncomplete={onUncomplete} />
+          {hasRevisions ? (
+            <RevisionCheckboxes revisions={question.allRevisions} onComplete={onComplete} onUncomplete={onUncomplete} />
+          ) : (
+            <span className="revision-syncing-text">Generating revision schedule...</span>
+          )}
         </div>
       )}
     </div>
@@ -479,7 +492,21 @@ export default function SheetPage() {
       toast.success('Notes saved.');
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['sheet-progress', sheetId, user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+    },
+  });
+
+  const syncRevisionMutation = useMutation({
+    mutationFn: async (questionId) => {
+      const response = await apiPost('/revision/sync-question', { question_id: questionId });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      toast.success('Revision schedule generated.');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Could not sync revision schedule.');
     },
   });
 
@@ -530,7 +557,14 @@ export default function SheetPage() {
           const nextRevisionDue =
             pendingRevisions.length > 0
               ? pendingRevisions.sort((a, b) => a.due_date.localeCompare(b.due_date))[0].due_date
-              : null;
+              : question.isSolved && question.solvedAt
+                ? new Date(
+                    new Date(question.solvedAt).getTime() +
+                      REVISION_DAYS[0] * 24 * 60 * 60 * 1000
+                  )
+                    .toISOString()
+                    .split('T')[0]
+                : null;
 
           return {
             ...question,
@@ -748,6 +782,7 @@ export default function SheetPage() {
                                       question={question}
                                       onComplete={(id) => completeRevisionMutation.mutate(id)}
                                       onUncomplete={(id) => uncompleteRevisionMutation.mutate(id)}
+                                      onSyncRevision={(id) => syncRevisionMutation.mutate(id)}
                                       isExpanded={revisionViewQuestionId === question.id}
                                       onToggle={toggleRevisionView}
                                     />
