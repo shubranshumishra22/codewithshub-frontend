@@ -2106,3 +2106,291 @@ h6 {
     justify-content: flex-end;
   }
 }
+
+/* Logic Check Validator Styles */
+.logic-check-modal {
+  max-width: 680px;
+  width: 90%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.logic-check-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.logic-check-desc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.5;
+}
+
+.logic-check-template {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.logic-check-template span {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+}
+
+.logic-check-template pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.logic-check-textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  tab-size: 4;
+}
+
+.logic-check-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.logic-check-run-btn {
+  gap: 8px;
+}
+
+.logic-check-results-panel {
+  background: #151619;
+  border: 1px solid #242629;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.logic-overall-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.status-pass {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border: 0.5px solid rgba(16, 185, 129, 0.2);
+}
+
+.status-fail {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 0.5px solid rgba(239, 68, 68, 0.2);
+}
+
+.logic-result-warn,
+.logic-result-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+  border: 0.5px solid rgba(245, 158, 11, 0.2);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.logic-result-error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 0.5px solid rgba(239, 68, 68, 0.2);
+}
+
+.logic-assumptions {
+  background: rgba(59, 130, 246, 0.05);
+  border: 1.5px solid rgba(59, 130, 246, 0.15);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.logic-assumptions-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #3b82f6;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.logic-assumptions ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+}
+
+.logic-test-cases h4 {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.test-cases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.test-case-item {
+  border-radius: 8px;
+  background: #1c1e21;
+  border: 1px solid #242629;
+  overflow: hidden;
+}
+
+.tc-header {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.01);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.tc-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tc-pass .tc-badge {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.tc-fail .tc-badge {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.tc-details {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 0.775rem;
+}
+
+.tc-details div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tc-details span {
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 500;
+}
+
+.tc-details pre {
+  margin: 0;
+  background: #111214;
+  border: 1px solid #242629;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  overflow-x: auto;
+}
+
+.actual-pre {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.05) !important;
+  border-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+.logic-generated-code-section {
+  border-top: 1px solid #242629;
+  padding-top: 16px;
+}
+
+.logic-toggle-code-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0;
+  outline: none;
+}
+
+.logic-toggle-code-btn:hover {
+  color: #e8eaed;
+}
+
+.chevron-transition {
+  transition: transform 0.2s ease;
+}
+
+.chevron-transition.is-rotated {
+  transform: rotate(180deg);
+}
+
+.logic-generated-code-wrap {
+  margin-top: 10px;
+  background: #111214;
+  border: 1px solid #242629;
+  border-radius: 8px;
+  padding: 14px;
+  overflow-x: auto;
+}
+
+.logic-generated-code-wrap pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.775rem;
+  line-height: 1.45;
+  color: #e8eaed;
+}
+
+/* Logic Check button style override inside SheetPage table */
+.notes-button.logic-check-btn-trigger {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+.notes-button.logic-check-btn-trigger:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.05);
+}

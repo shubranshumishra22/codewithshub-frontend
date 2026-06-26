@@ -7,12 +7,14 @@ import {
   Search,
   Save,
   X,
+  Brain,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient';
 import { apiDelete, apiGet, apiPost } from '../lib/apiClient';
 import { useAuth } from '../context/AuthContext';
 import SiteFooter from '../components/SiteFooter';
+import LogicCheckModal from '../components/LogicCheckModal';
 
 const STRIVER_SHEET_NAME = 'Striver A-Z';
 const REVISION_DAYS = [1, 3, 7, 15, 30, 60, 120];
@@ -185,6 +187,7 @@ export default function SheetPage() {
   const [revisionViewQuestionId, setRevisionViewQuestionId] = useState(null);
   const [notesQuestion, setNotesQuestion] = useState(null);
   const [notesDraft, setNotesDraft] = useState('');
+  const [logicCheckQuestion, setLogicCheckQuestion] = useState(null);
 
   const toggleRevisionView = (questionId) => {
     setRevisionViewQuestionId((prev) => (prev === questionId ? null : questionId));
@@ -739,6 +742,7 @@ export default function SheetPage() {
                               <th>Problem</th>
                               <th>Difficulty</th>
                               <th>Notes</th>
+                              <th>Logic Check</th>
                               <th>Revision</th>
                             </tr>
                           </thead>
@@ -789,6 +793,12 @@ export default function SheetPage() {
                                       <span>{noteCount > 0 ? 'Edit' : 'Add'} Notes</span>
                                     </button>
                                   </td>
+                                  <td data-label="Logic Check">
+                                    <button className="notes-button" type="button" onClick={() => setLogicCheckQuestion(question)}>
+                                      <Brain size={16} />
+                                      <span>Check Logic</span>
+                                    </button>
+                                  </td>
                                   <td data-label="Revision">
                                     <RevisionCell
                                       question={question}
@@ -804,7 +814,7 @@ export default function SheetPage() {
                             })}
                             {visibleQuestions.length === 0 ? (
                               <tr>
-                                <td colSpan={5}>
+                                <td colSpan={6}>
                                   <div className="sheet-empty-row">No questions match your search.</div>
                                 </td>
                               </tr>
@@ -830,6 +840,12 @@ export default function SheetPage() {
         onClose={closeNotes}
         onSave={saveNotes}
         saving={saveNotesMutation.isPending}
+      />
+
+      <LogicCheckModal
+        open={Boolean(logicCheckQuestion)}
+        question={logicCheckQuestion}
+        onClose={() => setLogicCheckQuestion(null)}
       />
     </main>
   );
