@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   PieChart,
@@ -14,7 +14,9 @@ import {
   LibraryBig,
   Sparkles,
   Trophy,
+  ChevronDown,
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import {
   eachDayOfInterval,
   format,
@@ -149,21 +151,37 @@ function Heatmap({ activityMap }) {
 export default function ProgressPage() {
   const { user } = useAuth();
 
-  const sheetQuery = useQuery({
-    queryKey: ['progress-sheet', STRIVER_SHEET_NAME],
+  const sheetsQuery = useQuery({
+    queryKey: ['sheets'],
     queryFn: async () => {
       const response = await apiGet('/sheets');
-      const sheet = response.data.sheets.find((item) => item.name === STRIVER_SHEET_NAME);
-
-      if (!sheet) {
-        throw new Error('Striver A-Z sheet not found');
-      }
-
-      return sheet;
+      return response.data.sheets || [];
     },
   });
 
-  const sheetId = sheetQuery.data?.id;
+  const allSheets = sheetsQuery.data || [];
+
+  const [activeSheetId, setActiveSheetId] = useState(() => localStorage.getItem('activeSheetId') || null);
+  const [activeSheetName, setActiveSheetName] = useState(() => localStorage.getItem('activeSheetName') || STRIVER_SHEET_NAME);
+
+  useEffect(() => {
+    if (allSheets.length > 0) {
+      let currentSheet = allSheets.find((s) => s.id === activeSheetId || s.name === activeSheetName);
+      if (!currentSheet) {
+        currentSheet = allSheets.find((s) => s.name === STRIVER_SHEET_NAME) || allSheets[0];
+      }
+      if (currentSheet) {
+        if (currentSheet.id !== activeSheetId || currentSheet.name !== activeSheetName) {
+          setActiveSheetId(currentSheet.id);
+          setActiveSheetName(currentSheet.name);
+          localStorage.setItem('activeSheetId', currentSheet.id);
+          localStorage.setItem('activeSheetName', currentSheet.name);
+        }
+      }
+    }
+  }, [allSheets, activeSheetId, activeSheetName]);
+
+  const sheetId = activeSheetId || allSheets.find((s) => s.name === activeSheetName)?.id;
 
   const topicsQuery = useQuery({
     queryKey: ['progress-topics', sheetId],
@@ -251,8 +269,8 @@ export default function ProgressPage() {
   const animatedStreak = useCountUp(streakCount);
   const animatedToday = useCountUp(solvedToday);
 
-  const isLoading = sheetQuery.isLoading || topicsQuery.isLoading || progressQuery.isLoading || settingsQuery.isLoading;
-  const hasError = sheetQuery.error || topicsQuery.error || progressQuery.error || settingsQuery.error;
+  const isLoading = sheetsQuery.isLoading || topicsQuery.isLoading || progressQuery.isLoading || settingsQuery.isLoading;
+  const hasError = sheetsQuery.error || topicsQuery.error || progressQuery.error || settingsQuery.error;
 
   return (
     <main className="progress-shell">
@@ -260,13 +278,33 @@ export default function ProgressPage() {
       <section className="progress-card auth-entrance">
         <div className="progress-hero">
           <div>
-            <div className="progress-kicker">
+            <div className="progress-kicker" style={{ cursor: 'pointer' }}>
               <Trophy size={16} />
-              <span>QUEST PROGRESS</span>
+              <select
+                value={activeSheetId || ''}
+                onChange={(e) => {
+                  const selectedId = e.target.value;
+                  const selectedSheet = allSheets.find((s) => s.id === selectedId);
+                  if (selectedSheet) {
+                    setActiveSheetId(selectedId);
+                    setActiveSheetName(selectedSheet.name);
+                    localStorage.setItem('activeSheetId', selectedId);
+                    localStorage.setItem('activeSheetName', selectedSheet.name);
+                    toast.success(`Switched focus to: ${selectedSheet.name}`);
+                  }
+                }}
+              >
+                {allSheets.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown size={12} style={{ opacity: 0.6 }} />
             </div>
             <h1>Progress Dashboard</h1>
             <p>
-              Track your Striver A-Z journey with live stats, topic mastery, revision heat, and difficulty split.
+              Track your {activeSheetName} journey with live stats, topic mastery, revision heat, and difficulty split.
             </p>
           </div>
           <Link className="progress-back-button" to="/">
@@ -311,7 +349,7 @@ export default function ProgressPage() {
             <section className="progress-panel">
               <SectionHeader
                 title="Topic Breakdown"
-                subtitle="Completion percentage for each topic in the Striver A-Z sheet."
+                subtitle={`Completion percentage for each topic in the ${activeSheetName} sheet.`}
               />
               <div className="topic-bars">
                 {topicStats.map((topic) => (

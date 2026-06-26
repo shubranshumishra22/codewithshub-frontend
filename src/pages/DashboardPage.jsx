@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Rocket, Trophy } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SiteFooter from '../components/SiteFooter';
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const [activeSheetName] = useState(() => localStorage.getItem('activeSheetName') || 'Striver A-Z');
 
   const displayName =
     user?.user_metadata?.username || user?.email?.split('@')[0] || 'Quest Player';
@@ -37,7 +39,7 @@ export default function DashboardPage() {
             <Trophy size={20} />
             <div>
               <span>Focus Zone</span>
-              <strong>Striver A-Z</strong>
+              <strong>{activeSheetName}</strong>
             </div>
           </article>
         </div>

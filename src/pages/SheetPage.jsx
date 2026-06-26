@@ -190,21 +190,37 @@ export default function SheetPage() {
     setRevisionViewQuestionId((prev) => (prev === questionId ? null : questionId));
   };
 
-  const sheetQuery = useQuery({
-    queryKey: ['sheet-catalog', STRIVER_SHEET_NAME],
+  const sheetsQuery = useQuery({
+    queryKey: ['sheets'],
     queryFn: async () => {
       const response = await apiGet('/sheets');
-      const sheet = response.data.sheets.find((item) => item.name === STRIVER_SHEET_NAME);
-
-      if (!sheet) {
-        throw new Error('Striver A-Z sheet not found');
-      }
-
-      return sheet;
+      return response.data.sheets || [];
     },
   });
 
-  const sheetId = sheetQuery.data?.id;
+  const allSheets = sheetsQuery.data || [];
+
+  const [activeSheetId, setActiveSheetId] = useState(() => localStorage.getItem('activeSheetId') || null);
+  const [activeSheetName, setActiveSheetName] = useState(() => localStorage.getItem('activeSheetName') || STRIVER_SHEET_NAME);
+
+  useEffect(() => {
+    if (allSheets.length > 0) {
+      let currentSheet = allSheets.find((s) => s.id === activeSheetId || s.name === activeSheetName);
+      if (!currentSheet) {
+        currentSheet = allSheets.find((s) => s.name === STRIVER_SHEET_NAME) || allSheets[0];
+      }
+      if (currentSheet) {
+        if (currentSheet.id !== activeSheetId || currentSheet.name !== activeSheetName) {
+          setActiveSheetId(currentSheet.id);
+          setActiveSheetName(currentSheet.name);
+          localStorage.setItem('activeSheetId', currentSheet.id);
+          localStorage.setItem('activeSheetName', currentSheet.name);
+        }
+      }
+    }
+  }, [allSheets, activeSheetId, activeSheetName]);
+
+  const sheetId = activeSheetId || allSheets.find((s) => s.name === activeSheetName)?.id;
 
   const topicsQuery = useQuery({
     queryKey: ['sheet-topics', sheetId],
@@ -605,17 +621,37 @@ export default function SheetPage() {
     closeNotes();
   };
 
-  const isLoading = sheetQuery.isLoading || topicsQuery.isLoading || progressQuery.isLoading;
-  const hasError = sheetQuery.error || topicsQuery.error || progressQuery.error;
+  const isLoading = sheetsQuery.isLoading || topicsQuery.isLoading || progressQuery.isLoading;
+  const hasError = sheetsQuery.error || topicsQuery.error || progressQuery.error;
 
   return (
     <main className="sheet-shell">
       <section className="sheet-card auth-entrance">
         <div className="sheet-header">
           <div>
-            <div className="sheet-kicker">
+            <div className="sheet-kicker" style={{ cursor: 'pointer' }}>
               <BookOpen size={16} />
-              <span>STRIVER A-Z SHEET</span>
+              <select
+                value={activeSheetId || ''}
+                onChange={(e) => {
+                  const selectedId = e.target.value;
+                  const selectedSheet = allSheets.find((s) => s.id === selectedId);
+                  if (selectedSheet) {
+                    setActiveSheetId(selectedId);
+                    setActiveSheetName(selectedSheet.name);
+                    localStorage.setItem('activeSheetId', selectedId);
+                    localStorage.setItem('activeSheetName', selectedSheet.name);
+                    toast.success(`Switched focus to: ${selectedSheet.name}`);
+                  }
+                }}
+              >
+                {allSheets.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown size={12} style={{ opacity: 0.6 }} />
             </div>
             <h1>DSA QUEST</h1>
             <p className="sheet-subtitle">
@@ -633,7 +669,7 @@ export default function SheetPage() {
           </article>
           <article>
             <span>Active Sheet</span>
-            <strong>{STRIVER_SHEET_NAME}</strong>
+            <strong>{activeSheetName}</strong>
           </article>
           <article>
             <span>Search Mode</span>
