@@ -137,34 +137,31 @@ function RevisionCell({ question, onComplete, onUncomplete, onSyncRevision, isEx
 }
 
 function RevisionCheckboxes({ revisions, onComplete, onUncomplete }) {
-  const revisionByDay = useMemo(() => {
-    const map = {};
-    (revisions || []).forEach((r) => { map[r.revision_day] = r; });
-    return map;
+  const sortedRevisions = useMemo(() => {
+    return [...(revisions || [])].sort((a, b) => a.revision_day - b.revision_day);
   }, [revisions]);
 
   return (
     <div className="revision-checkboxes">
-      {REVISION_DAYS.map((day) => {
-        const revision = revisionByDay[day];
-        const exists = Boolean(revision);
-        const checked = exists && revision.is_completed;
+      {sortedRevisions.map((revision) => {
+        const day = revision.revision_day;
+        const checked = revision.is_completed;
         const now = new Date();
-        const dueDate = revision ? new Date(revision.due_date + 'T00:00:00') : null;
-        const canInteract = exists && (checked || (dueDate && now >= dueDate));
+        now.setHours(0, 0, 0, 0);
+        const dueDate = new Date(revision.due_date + 'T00:00:00');
+        const canInteract = checked || now >= dueDate;
 
         return (
           <label
-            key={day}
-            className={`revision-cb${exists && checked ? ' revision-cb-done' : ''}${canInteract && !checked ? ' revision-cb-ready' : ''}${!exists ? ' revision-cb-missing' : ''}`}
-            title={revision ? `Due: ${revision.due_date} (day +${day})` : 'Not scheduled'}
+            key={revision.id}
+            className={`revision-cb${checked ? ' revision-cb-done' : ''}${canInteract && !checked ? ' revision-cb-ready' : ''}${!canInteract ? ' revision-cb-disabled' : ''}`}
+            title={`Due: ${revision.due_date} (day +${day})`}
           >
             <input
               type="checkbox"
               checked={checked}
               disabled={!canInteract}
               onChange={() => {
-                if (!revision) return;
                 if (checked) {
                   onUncomplete(revision.id);
                 } else {
@@ -233,7 +230,7 @@ export default function SheetPage() {
   });
 
   const revisionQuery = useQuery({
-    queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')],
+    queryKey: ['sheet-revisions', sheetId, user?.id],
     enabled: Boolean(sheetId && user?.id && questionIds.length > 0),
     queryFn: async () => {
       const { data, error } = await supabase
@@ -255,15 +252,10 @@ export default function SheetPage() {
     mutationFn: async (questionId) => apiPost('/progress', { question_id: questionId }),
     onMutate: async (questionId) => {
       await queryClient.cancelQueries({ queryKey: ['sheet-progress', sheetId, user?.id] });
-      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
 
       const previousProgress = queryClient.getQueryData(['sheet-progress', sheetId, user?.id]);
-      const previousRevisions = queryClient.getQueryData([
-        'sheet-revisions',
-        sheetId,
-        user?.id,
-        questionIds.join(','),
-      ]);
+      const previousRevisions = queryClient.getQueryData(['sheet-revisions', sheetId, user?.id]);
 
       queryClient.setQueryData(['sheet-progress', sheetId, user?.id], (current) => {
         const rows = Array.isArray(current) ? current : [];
@@ -292,10 +284,7 @@ export default function SheetPage() {
       }
 
       if (context?.previousRevisions) {
-        queryClient.setQueryData(
-          ['sheet-revisions', sheetId, user?.id, questionIds.join(',')],
-          context.previousRevisions
-        );
+        queryClient.setQueryData(['sheet-revisions', sheetId, user?.id], context.previousRevisions);
       }
 
       toast.error(error.message || 'Could not mark the question as solved.');
@@ -303,7 +292,7 @@ export default function SheetPage() {
     onSuccess: (response, questionId) => {
       const revisionRows = response.data.revision_schedule || [];
 
-      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], (current) => {
+      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id], (current) => {
         const rows = Array.isArray(current) ? current : [];
         const remainingRows = rows.filter((row) => row.question_id !== questionId);
         return [...remainingRows, ...revisionRows];
@@ -313,7 +302,7 @@ export default function SheetPage() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['sheet-progress', sheetId, user?.id] });
-      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
     },
   });
 
@@ -321,15 +310,10 @@ export default function SheetPage() {
     mutationFn: async (questionId) => apiDelete(`/progress/${questionId}`),
     onMutate: async (questionId) => {
       await queryClient.cancelQueries({ queryKey: ['sheet-progress', sheetId, user?.id] });
-      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
 
       const previousProgress = queryClient.getQueryData(['sheet-progress', sheetId, user?.id]);
-      const previousRevisions = queryClient.getQueryData([
-        'sheet-revisions',
-        sheetId,
-        user?.id,
-        questionIds.join(','),
-      ]);
+      const previousRevisions = queryClient.getQueryData(['sheet-revisions', sheetId, user?.id]);
 
       queryClient.setQueryData(['sheet-progress', sheetId, user?.id], (current) => {
         const rows = Array.isArray(current) ? current : [];
@@ -349,7 +333,7 @@ export default function SheetPage() {
         return [...filteredRows, nextRow];
       });
 
-      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], (current) => {
+      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id], (current) => {
         const rows = Array.isArray(current) ? current : [];
         return rows.filter((row) => row.question_id !== questionId);
       });
@@ -362,10 +346,7 @@ export default function SheetPage() {
       }
 
       if (context?.previousRevisions) {
-        queryClient.setQueryData(
-          ['sheet-revisions', sheetId, user?.id, questionIds.join(',')],
-          context.previousRevisions
-        );
+        queryClient.setQueryData(['sheet-revisions', sheetId, user?.id], context.previousRevisions);
       }
 
       toast.error(error.message || 'Could not mark the question as unsolved.');
@@ -375,7 +356,7 @@ export default function SheetPage() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['sheet-progress', sheetId, user?.id] });
-      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
     },
   });
 
@@ -385,9 +366,9 @@ export default function SheetPage() {
       return response.data.revision;
     },
     onMutate: async (revisionScheduleId) => {
-      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
-      const previous = queryClient.getQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')]);
-      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], (current) => {
+      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
+      const previous = queryClient.getQueryData(['sheet-revisions', sheetId, user?.id]);
+      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id], (current) => {
         if (!Array.isArray(current)) return current;
         return current.map((r) =>
           r.id === revisionScheduleId
@@ -399,12 +380,12 @@ export default function SheetPage() {
     },
     onError: (error, _revisionId, context) => {
       if (context?.previous) {
-        queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], context.previous);
+        queryClient.setQueryData(['sheet-revisions', sheetId, user?.id], context.previous);
       }
       toast.error(error.message || 'Could not complete revision.');
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
     },
   });
 
@@ -414,9 +395,9 @@ export default function SheetPage() {
       return response.data.revision;
     },
     onMutate: async (revisionScheduleId) => {
-      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
-      const previous = queryClient.getQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')]);
-      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], (current) => {
+      await queryClient.cancelQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
+      const previous = queryClient.getQueryData(['sheet-revisions', sheetId, user?.id]);
+      queryClient.setQueryData(['sheet-revisions', sheetId, user?.id], (current) => {
         if (!Array.isArray(current)) return current;
         return current.map((r) =>
           r.id === revisionScheduleId
@@ -428,12 +409,12 @@ export default function SheetPage() {
     },
     onError: (error, _revisionId, context) => {
       if (context?.previous) {
-        queryClient.setQueryData(['sheet-revisions', sheetId, user?.id, questionIds.join(',')], context.previous);
+        queryClient.setQueryData(['sheet-revisions', sheetId, user?.id], context.previous);
       }
       toast.error(error.message || 'Could not uncomplete revision.');
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
     },
   });
 
@@ -441,13 +422,11 @@ export default function SheetPage() {
     markSolvedMutation.isPending || unmarkSolvedMutation.isPending;
 
   const saveNotesMutation = useMutation({
-    mutationFn: async ({ questionId, notes, isSolved, solvedAt }) => {
+    mutationFn: async ({ questionId, notes }) => {
       const { error } = await supabase.from('user_progress').upsert(
         {
           user_id: user.id,
           question_id: questionId,
-          is_solved: isSolved,
-          solved_at: isSolved ? solvedAt || new Date().toISOString() : null,
           notes,
         },
         { onConflict: 'user_id,question_id' }
@@ -492,7 +471,8 @@ export default function SheetPage() {
       toast.success('Notes saved.');
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      queryClient.invalidateQueries({ queryKey: ['sheet-progress', sheetId, user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
     },
   });
 
@@ -502,7 +482,7 @@ export default function SheetPage() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id, questionIds.join(',')] });
+      queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
       toast.success('Revision schedule generated.');
     },
     onError: (error) => {
@@ -546,12 +526,8 @@ export default function SheetPage() {
         const questions = topic.questions.map((question) => {
           const progress = progressByQuestion[question.id];
           const allRevisions = revisionByQuestion[question.id] || [];
-          const revisionByDay = {};
-          allRevisions.forEach((r) => { revisionByDay[r.revision_day] = r; });
-          const allRevisionsCompleted = REVISION_DAYS.every((day) => {
-            const rev = revisionByDay[day];
-            return rev?.is_completed;
-          });
+          const allRevisionsCompleted =
+            allRevisions.length > 0 && allRevisions.every((rev) => rev.is_completed);
 
           const pendingRevisions = allRevisions.filter((r) => !r.is_completed);
           const nextRevisionDue =

@@ -1074,6 +1074,15 @@ h6 {
   pointer-events: none;
 }
 
+.revision-cb.revision-cb-disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.revision-cb.revision-cb-disabled input {
+  cursor: not-allowed;
+}
+
 .question-table tbody tr.is-revision-done .question-title {
   color: #bbb;
   text-decoration: line-through;
