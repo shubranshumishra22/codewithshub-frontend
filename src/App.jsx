@@ -3,7 +3,6 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import FloatingNavbar from './components/FloatingNavbar';
 import RevisionTerminal from './components/RevisionTerminal';
-import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import ProgressPage from './pages/ProgressPage';
 import SheetPage from './pages/SheetPage';
@@ -21,15 +20,6 @@ export default function App() {
               <ProtectedRoute>
                 <FloatingNavbar />
                 <SheetPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <FloatingNavbar />
-                <DashboardPage />
               </ProtectedRoute>
             }
           />

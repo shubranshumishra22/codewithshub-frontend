@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, LogOut, Sparkles, Trophy, Rocket } from 'lucide-react';
+import { BookOpen, LogOut, Sparkles, Trophy } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
@@ -55,14 +55,6 @@ export default function FloatingNavbar() {
         </Link>
 
         <div style={{ display: 'flex', gap: '8px' }}>
-          <Link
-            to="/dashboard"
-            className={`floating-navbar-link ${location.pathname === '/dashboard' ? 'is-active' : ''}`}
-          >
-            <Rocket size={16} />
-            <span>Dashboard</span>
-          </Link>
-
           <Link
             to="/progress"
             className={`floating-navbar-link ${location.pathname === '/progress' ? 'is-active' : ''}`}

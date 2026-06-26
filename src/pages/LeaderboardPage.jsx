@@ -43,9 +43,9 @@ export default function LeaderboardPage() {
               Compete with fellow quest players by maintaining your daily coding streaks.
             </p>
           </div>
-          <Link className="leaderboard-back-button" to="/dashboard">
+          <Link className="leaderboard-back-button" to="/">
             <ArrowLeft size={16} />
-            Back to Dashboard
+            Back to Sheet
           </Link>
         </div>
 
