@@ -4,14 +4,12 @@ import { X, Play, AlertCircle, CheckCircle, ChevronDown, Sparkles } from 'lucide
 import toast from 'react-hot-toast';
 import { apiPost } from '../lib/apiClient';
 
-const TEMPLATE_PLACEHOLDER = `function twoSum(nums, target):
-    seen = empty map
-    for i from 0 to length(nums) - 1:
-        complement = target - nums[i]
-        if complement in seen:
-            return [seen[complement], i]
-        seen[nums[i]] = i
-    return []`;
+const TEMPLATE_PLACEHOLDER = `function countPositives(numbers):
+    count = 0
+    for each num in numbers:
+        if num > 0:
+            count = count + 1
+    return count`;
 
 export default function LogicCheckModal({ open, question, onClose }) {
   const [pseudocode, setPseudocode] = useState('');
