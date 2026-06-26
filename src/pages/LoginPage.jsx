@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Gamepad2, LogIn, Sparkles } from 'lucide-react';
+import { Gamepad2, LogIn, Sparkles, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import TerminalBlock from '../components/TerminalBlock';
@@ -15,6 +15,8 @@ export default function LoginPage() {
   const location = useLocation();
 
   const from = location.state?.from?.pathname || '/';
+  const emailSent = location.state?.emailSent;
+  const registeredEmail = location.state?.email;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -54,6 +56,25 @@ export default function LoginPage() {
             Enter the arena and continue your coding streak.
           </p>
         </header>
+
+        {emailSent && (
+          <div style={{
+            margin: '24px 0 12px 0',
+            padding: '16px',
+            borderRadius: '8px',
+            background: 'rgba(52, 211, 153, 0.04)',
+            border: '0.5px solid rgba(52, 211, 153, 0.25)',
+            color: '#34d399',
+            fontSize: '0.875rem',
+            lineHeight: '1.6'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', color: '#fff', fontWeight: '600' }}>
+              <Mail size={16} className="text-emerald-400" />
+              <span>Verification Email Sent!</span>
+            </div>
+            A confirmation link has been sent to <strong style={{ color: '#fff' }}>{registeredEmail}</strong>. Please check your inbox (and spam folder) to activate your account before logging in.
+          </div>
+        )}
 
         <TerminalBlock />
 
