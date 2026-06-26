@@ -4,9 +4,9 @@ const creditUrl =
 export default function SiteFooter() {
   return (
     <footer className="site-footer">
-      <span>build by</span>
+      <span>built by </span>
       <a href={creditUrl} target="_blank" rel="noreferrer">
-        shubranshu.vercel.app
+        Shubranshu
       </a>
     </footer>
   );
