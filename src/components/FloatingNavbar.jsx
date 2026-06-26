@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, LogOut, Sparkles, Trophy } from 'lucide-react';
+import { BookOpen, LogOut, Sparkles, Trophy, Rocket } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
@@ -54,13 +54,31 @@ export default function FloatingNavbar() {
           <span>DSA QUEST</span>
         </Link>
 
-        <Link
-          to="/progress"
-          className={`floating-navbar-link ${location.pathname === '/progress' ? 'is-active' : ''}`}
-        >
-          <Trophy size={16} />
-          <span>Dashboard</span>
-        </Link>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Link
+            to="/dashboard"
+            className={`floating-navbar-link ${location.pathname === '/dashboard' ? 'is-active' : ''}`}
+          >
+            <Rocket size={16} />
+            <span>Dashboard</span>
+          </Link>
+
+          <Link
+            to="/progress"
+            className={`floating-navbar-link ${location.pathname === '/progress' ? 'is-active' : ''}`}
+          >
+            <Trophy size={16} />
+            <span>Progress</span>
+          </Link>
+
+          <Link
+            to="/leaderboard"
+            className={`floating-navbar-link ${location.pathname === '/leaderboard' ? 'is-active' : ''}`}
+          >
+            <Trophy size={16} />
+            <span>Leaderboard</span>
+          </Link>
+        </div>
 
         <div className="floating-navbar-right">
           <div className="floating-navbar-badge">

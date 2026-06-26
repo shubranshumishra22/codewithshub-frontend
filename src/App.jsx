@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import ProgressPage from './pages/ProgressPage';
 import SheetPage from './pages/SheetPage';
 import SignupPage from './pages/SignupPage';
+import LeaderboardPage from './pages/LeaderboardPage';
 
 export default function App() {
   return (
@@ -38,6 +39,15 @@ export default function App() {
               <ProtectedRoute>
                 <FloatingNavbar />
                 <ProgressPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/leaderboard"
+            element={
+              <ProtectedRoute>
+                <FloatingNavbar />
+                <LeaderboardPage />
               </ProtectedRoute>
             }
           />
