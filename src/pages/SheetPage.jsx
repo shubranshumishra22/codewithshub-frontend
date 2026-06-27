@@ -3,8 +3,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   FilePenLine,
   Search,
   Save,
@@ -712,107 +710,67 @@ export default function SheetPage() {
   };
 
   return (
-    <main className={`dashboard-shell${isSidebarCollapsed ? ' sidebar-collapsed' : ''}`}>
-      <aside
-        className={`dashboard-sidebar${isDragging ? ' is-dragging' : ''}`}
-        style={{ width: isSidebarCollapsed ? 0 : sidebarWidth }}
-        aria-hidden={isSidebarCollapsed}
-      >
-        <div className="sidebar-topbar">
-          <span className="sidebar-title">Practice Tracks</span>
-          <button
-            className="sidebar-toggle"
-            type="button"
-            onClick={() => setIsSidebarCollapsed(true)}
-            aria-label="Collapse sidebar"
-            title="Collapse sidebar"
-          >
-            <ChevronLeft size={18} />
-          </button>
-        </div>
-        <div className="sidebar-section">
-          <div className="sidebar-heading">DSA</div>
-          {allSheets.map((s) => {
-            const isActive = s.id === activeSheetId;
-            return (
-              <button
-                key={s.id}
-                className={`sidebar-item${isActive ? ' is-active' : ''}`}
-                type="button"
-                onClick={() => switchSheet(s)}
-              >
-                <i className={sheetIconMap[s.name] || 'ti-file'}></i>
-                <span>{s.name}</span>
-                {isActive && <span className="sidebar-badge">active</span>}
-              </button>
-            );
-          })}
-        </div>
-        <div className="sidebar-section">
-          <div className="sidebar-heading">Coming soon</div>
-          <span className="sidebar-item is-disabled">Web Dev</span>
-          <span className="sidebar-item is-disabled">System Design</span>
-          <span className="sidebar-item is-disabled">SQL</span>
-        </div>
-      </aside>
-      {!isSidebarCollapsed && (
-        <div
-          className={`sidebar-resize-handle${isDragging ? ' is-dragging' : ''}`}
-          onMouseDown={handleSidebarResize}
-          role="separator"
-          aria-label="Resize sidebar"
-        />
-      )}
-
-      <div className="dashboard-main">
-        {isSidebarCollapsed && (
-          <button
-            className="sidebar-reopen"
-            type="button"
-            onClick={() => setIsSidebarCollapsed(false)}
-            aria-label="Open sidebar"
-            title="Open sidebar"
-          >
-            <ChevronRight size={20} />
-          </button>
-        )}
-        <div className="progress-block">
-          <div className="progress-eyebrow">{activeSheetName} · Solving</div>
-          <div className="progress-count">
-            <span className="progress-solved">{stats.solvedCount}</span>
-            <span className="progress-total"> / {stats.totalCount}</span>
+    <main className="dashboard-shell">
+      <div className="dashboard-container">
+        {/* ── Hero ── */}
+        <div className="dh-hero">
+          <h1 className="dh-title">{activeSheetName}</h1>
+          <p className="dh-subtitle">Master data structures and algorithms one pattern at a time.</p>
+          <div className="dh-meta">
+            <span className="dh-count">{stats.solvedCount} solved</span>
+            <span className="dh-divider">·</span>
+            <span className="dh-count">{stats.totalCount} total problems</span>
           </div>
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{
-                width: `${stats.totalCount > 0 ? (stats.solvedCount / stats.totalCount) * 100 : 0}%`,
-              }}
+          <div className="dh-track">
+            <div className="dh-track-fill" style={{ width: `${stats.totalCount > 0 ? (stats.solvedCount / stats.totalCount) * 100 : 0}%` }} />
+          </div>
+        </div>
+
+        {/* ── Track Selector ── */}
+        <div className="ts-shell">
+          <div className="ts-list">
+            {allSheets.map((s) => {
+              const isActive = s.id === activeSheetId;
+              return (
+                <button
+                  key={s.id}
+                  className={`ts-item${isActive ? ' is-active' : ''}`}
+                  type="button"
+                  onClick={() => switchSheet(s)}
+                >
+                  {s.name}
+                  {isActive && <span className="ts-indicator" />}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Search ── */}
+        <div className="ds-search-row">
+          <label className="ds-search">
+            <Search size={18} />
+            <input
+              type="text"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search problems..."
             />
-          </div>
+          </label>
         </div>
 
-        <label className="dashboard-search">
-          <Search size={15} />
-          <input
-            type="text"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search questions across topics..."
-          />
-        </label>
-
+        {/* ── Content ── */}
         {isLoading ? (
-          <div className="step-empty-state">
+          <div className="ds-empty">
             <div className="auth-loading-spinner" />
             <p>Loading your quest map...</p>
           </div>
         ) : hasError ? (
-          <div className="step-empty-state step-empty-error">
+          <div className="ds-empty ds-empty-error">
             <p>{hasError.message || 'Failed to load the DSA sheet.'}</p>
           </div>
         ) : (
-          <div className="step-list">
+          <div className="ds-section-list">
             {topics.map((topic, index) => {
               const isOpen = openTopicId === topic.id;
               const totalCount = topic.questions.length;
@@ -820,30 +778,28 @@ export default function SheetPage() {
               const topicProgress = totalCount > 0 ? (topic.solvedCount / totalCount) * 100 : 0;
 
               return (
-                <section key={topic.id} className={`step-card${isOpen ? ' is-open' : ''}`}>
+                <section key={topic.id} className={`ds-section${isOpen ? ' is-open' : ''}`}>
                   <button
-                    className="step-row"
+                    className="ds-section-row"
                     type="button"
                     onClick={() => setOpenTopicId(isOpen ? null : topic.id)}
                   >
-                    <span className="step-number">{String(index + 1).padStart(2, '0')}</span>
-                    <div className="step-info">
-                      <span className="step-name">{topic.name}</span>
-                      <span className="step-questions">{visibleQuestions.length} question{visibleQuestions.length === 1 ? '' : 's'}</span>
+                    <span className="ds-section-num">{String(index + 1).padStart(2, '0')}</span>
+                    <div className="ds-section-info">
+                      <span className="ds-section-name">{topic.name}</span>
+                      <span className="ds-section-desc">Foundational concepts · Core patterns · Key techniques</span>
                     </div>
-                    <span className="step-progress-wrap">
-                      <span className="step-progress">{topic.solvedCount}/{totalCount}</span>
-                      <span className="step-progress-bar" aria-hidden="true">
-                        <span style={{ width: `${topicProgress}%` }} />
-                      </span>
+                    <span className="ds-section-progress">{topic.solvedCount} / {totalCount}</span>
+                    <span className="ds-section-bar">
+                      <span style={{ width: `${topicProgress}%` }} />
                     </span>
-                    <ChevronDown size={14} className="step-chevron" />
+                    <ChevronDown size={16} className="ds-section-chevron" />
                   </button>
 
-                  <div className="step-body-shell" style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}>
-                    <div className="step-body">
-                      <div className="question-table-wrap">
-                        <table className="question-table">
+                  <div className="ds-section-body-shell" style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}>
+                    <div className="ds-section-body">
+                      <div className="ds-table-wrap">
+                        <table className="ds-table">
                           <thead>
                             <tr>
                               <th className="checkbox-column">Done</th>
@@ -876,50 +832,27 @@ export default function SheetPage() {
                                     />
                                   </td>
                                   <td>
-                                    <div className="q-title-group">
+                                    <div className="ds-q-group">
                                       <Link
                                         to={`/question/${slugify(question.title)}`}
-                                        className="q-title-link"
+                                        className="ds-q-link"
                                       >
                                         {question.title}
                                       </Link>
-                                      <div className="q-link-row">
+                                      <div className="ds-q-links">
                                         {question.leetcode_url ? (
-                                          <a
-                                            href={question.leetcode_url}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="q-link"
-                                          >
-                                            <img
-                                              src="https://leetcode.com/favicon.ico"
-                                              alt="Leetcode"
-                                              className="q-link-favicon"
-                                            />
+                                          <a href={question.leetcode_url} target="_blank" rel="noreferrer" className="ds-q-chip">
+                                            <img src="https://leetcode.com/favicon.ico" alt="Leetcode" className="ds-q-favicon" />
                                             <span>Leetcode</span>
                                           </a>
                                         ) : (
-                                          <a
-                                            href={`https://www.geeksforgeeks.org/problems/${slugify(question.title)}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="q-link"
-                                          >
-                                            <img
-                                              src="https://www.geeksforgeeks.org/favicon.ico"
-                                              alt="GFG"
-                                              className="q-link-favicon"
-                                            />
+                                          <a href={`https://www.geeksforgeeks.org/problems/${slugify(question.title)}`} target="_blank" rel="noreferrer" className="ds-q-chip">
+                                            <img src="https://www.geeksforgeeks.org/favicon.ico" alt="GFG" className="ds-q-favicon" />
                                             <span>GFG</span>
                                           </a>
                                         )}
                                         {question.video_url && (
-                                          <a
-                                            href={question.video_url}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="q-link q-link-video"
-                                          >
+                                          <a href={question.video_url} target="_blank" rel="noreferrer" className="ds-q-chip ds-q-chip-video">
                                             <Play size={10} />
                                             <span>Video</span>
                                           </a>
@@ -928,18 +861,18 @@ export default function SheetPage() {
                                     </div>
                                   </td>
                                   <td>
-                                    <span className={`q-diff-badge ${difficulty.className}`}>
+                                    <span className={`ds-diff-badge ${difficulty.className}`}>
                                       {difficulty.label}
                                     </span>
                                   </td>
                                   <td>
-                                    <button className="q-notes-btn" type="button" onClick={() => openNotes(question)}>
+                                    <button className="ds-q-btn" type="button" onClick={() => openNotes(question)}>
                                       <FilePenLine size={12} />
                                       <span>{noteCount > 0 ? 'Edit' : 'Add'}</span>
                                     </button>
                                   </td>
                                   <td>
-                                    <button className="q-logic-btn" type="button" onClick={() => setLogicCheckQuestion(question)}>
+                                    <button className="ds-q-btn" type="button" onClick={() => setLogicCheckQuestion(question)}>
                                       <Brain size={12} />
                                       <span>{isSolved ? 'Verify' : 'Unlock'}</span>
                                     </button>
@@ -960,7 +893,7 @@ export default function SheetPage() {
                             {visibleQuestions.length === 0 ? (
                               <tr>
                                 <td colSpan={6}>
-                                  <div className="step-empty-row">No questions match your search.</div>
+                                  <div className="ds-empty-row">No questions match your search.</div>
                                 </td>
                               </tr>
                             ) : null}
