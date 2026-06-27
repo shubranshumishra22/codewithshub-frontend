@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   FilePenLine,
   Search,
   Save,
@@ -215,6 +217,7 @@ export default function SheetPage() {
   
   const [hoveredSidebarId, setHoveredSidebarId] = useState(null);
   const [hoveredStepId, setHoveredStepId] = useState(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => localStorage.getItem('sidebarCollapsed') === 'true');
 
   const toggleRevisionView = (questionId) => {
     setRevisionViewQuestionId((prev) => (prev === questionId ? null : questionId));
@@ -242,7 +245,15 @@ export default function SheetPage() {
     localStorage.setItem('sidebarWidth', String(sidebarWidth));
   }, [sidebarWidth]);
 
+  useEffect(() => {
+    localStorage.setItem('sidebarCollapsed', String(isSidebarCollapsed));
+  }, [isSidebarCollapsed]);
+
   const handleSidebarResize = useCallback((e) => {
+    if (isSidebarCollapsed) {
+      return;
+    }
+
     const startX = e.clientX;
     const startWidth = sidebarWidth;
     setIsDragging(true);
@@ -264,7 +275,7 @@ export default function SheetPage() {
     document.addEventListener('mouseup', onUp);
     document.body.style.cursor = 'col-resize';
     document.body.style.userSelect = 'none';
-  }, [sidebarWidth]);
+  }, [isSidebarCollapsed, sidebarWidth]);
 
   const [activeSheetId, setActiveSheetId] = useState(() => localStorage.getItem('activeSheetId') || null);
   const [activeSheetName, setActiveSheetName] = useState(() => localStorage.getItem('activeSheetName') || STRIVER_SHEET_NAME);
@@ -701,8 +712,24 @@ export default function SheetPage() {
   };
 
   return (
-    <main className="dashboard-shell">
-      <aside className={`dashboard-sidebar${isDragging ? ' is-dragging' : ''}`} style={{ width: sidebarWidth }}>
+    <main className={`dashboard-shell${isSidebarCollapsed ? ' sidebar-collapsed' : ''}`}>
+      <aside
+        className={`dashboard-sidebar${isDragging ? ' is-dragging' : ''}`}
+        style={{ width: isSidebarCollapsed ? 0 : sidebarWidth }}
+        aria-hidden={isSidebarCollapsed}
+      >
+        <div className="sidebar-topbar">
+          <span className="sidebar-title">Practice Tracks</span>
+          <button
+            className="sidebar-toggle"
+            type="button"
+            onClick={() => setIsSidebarCollapsed(true)}
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+          >
+            <ChevronLeft size={18} />
+          </button>
+        </div>
         <div className="sidebar-section">
           <div className="sidebar-heading">DSA</div>
           {allSheets.map((s) => {
@@ -728,9 +755,27 @@ export default function SheetPage() {
           <span className="sidebar-item is-disabled">SQL</span>
         </div>
       </aside>
-      <div className={`sidebar-resize-handle${isDragging ? ' is-dragging' : ''}`} onMouseDown={handleSidebarResize} />
+      {!isSidebarCollapsed && (
+        <div
+          className={`sidebar-resize-handle${isDragging ? ' is-dragging' : ''}`}
+          onMouseDown={handleSidebarResize}
+          role="separator"
+          aria-label="Resize sidebar"
+        />
+      )}
 
       <div className="dashboard-main">
+        {isSidebarCollapsed && (
+          <button
+            className="sidebar-reopen"
+            type="button"
+            onClick={() => setIsSidebarCollapsed(false)}
+            aria-label="Open sidebar"
+            title="Open sidebar"
+          >
+            <ChevronRight size={20} />
+          </button>
+        )}
         <div className="progress-block">
           <div className="progress-eyebrow">Striver A–Z · Solving</div>
           <div className="progress-count">
@@ -772,6 +817,7 @@ export default function SheetPage() {
               const isOpen = openTopicId === topic.id;
               const totalCount = topic.questions.length;
               const visibleQuestions = topic.filteredQuestions;
+              const topicProgress = totalCount > 0 ? (topic.solvedCount / totalCount) * 100 : 0;
 
               return (
                 <section key={topic.id} className={`step-card${isOpen ? ' is-open' : ''}`}>
@@ -785,7 +831,12 @@ export default function SheetPage() {
                       <span className="step-name">{topic.name}</span>
                       <span className="step-questions">{visibleQuestions.length} question{visibleQuestions.length === 1 ? '' : 's'}</span>
                     </div>
-                    <span className="step-progress">{topic.solvedCount}/{totalCount}</span>
+                    <span className="step-progress-wrap">
+                      <span className="step-progress">{topic.solvedCount}/{totalCount}</span>
+                      <span className="step-progress-bar" aria-hidden="true">
+                        <span style={{ width: `${topicProgress}%` }} />
+                      </span>
+                    </span>
                     <ChevronDown size={14} className="step-chevron" />
                   </button>
 
