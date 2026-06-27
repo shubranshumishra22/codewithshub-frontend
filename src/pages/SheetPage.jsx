@@ -796,9 +796,33 @@ export default function SheetPage() {
                                             target="_blank"
                                             rel="noreferrer"
                                             className="question-title"
-                                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'rgba(255,255,255,0.45)' }}
+                                            style={{
+                                              display: 'inline-flex',
+                                              alignItems: 'center',
+                                              gap: '6px',
+                                              color: '#e8eaed',
+                                              background: '#1c1e21',
+                                              border: '0.5px solid #242629',
+                                              padding: '4px 10px',
+                                              borderRadius: '6px',
+                                              fontSize: '0.75rem',
+                                              fontWeight: '500',
+                                              transition: 'border-color 0.2s ease, background 0.2s ease',
+                                            }}
+                                            onMouseEnter={(e) => {
+                                              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+                                              e.currentTarget.style.background = '#242629';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                              e.currentTarget.style.borderColor = '#242629';
+                                              e.currentTarget.style.background = '#1c1e21';
+                                            }}
                                           >
-                                            <ExternalLink size={11} />
+                                            <img
+                                              src="https://leetcode.com/favicon.ico"
+                                              alt="Leetcode"
+                                              style={{ width: '12px', height: '12px', objectFit: 'contain', verticalAlign: 'middle' }}
+                                            />
                                             <span>Leetcode</span>
                                           </a>
                                         ) : (
@@ -807,9 +831,33 @@ export default function SheetPage() {
                                             target="_blank"
                                             rel="noreferrer"
                                             className="question-title"
-                                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'rgba(255,255,255,0.45)' }}
+                                            style={{
+                                              display: 'inline-flex',
+                                              alignItems: 'center',
+                                              gap: '6px',
+                                              color: '#e8eaed',
+                                              background: '#1c1e21',
+                                              border: '0.5px solid #242629',
+                                              padding: '4px 10px',
+                                              borderRadius: '6px',
+                                              fontSize: '0.75rem',
+                                              fontWeight: '500',
+                                              transition: 'border-color 0.2s ease, background 0.2s ease',
+                                            }}
+                                            onMouseEnter={(e) => {
+                                              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+                                              e.currentTarget.style.background = '#242629';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                              e.currentTarget.style.borderColor = '#242629';
+                                              e.currentTarget.style.background = '#1c1e21';
+                                            }}
                                           >
-                                            <ExternalLink size={11} />
+                                            <img
+                                              src="https://www.geeksforgeeks.org/favicon.ico"
+                                              alt="GFG"
+                                              style={{ width: '12px', height: '12px', objectFit: 'contain', verticalAlign: 'middle' }}
+                                            />
                                             <span>GFG</span>
                                           </a>
                                         )}
