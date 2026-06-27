@@ -2,19 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
-  BookOpen,
   ChevronDown,
   FilePenLine,
-  ListChecks,
   Search,
   Save,
   X,
   Brain,
-  ExternalLink,
   Play,
-  Code,
-  Layers,
-  Database,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient';
@@ -39,6 +33,15 @@ const slugify = (text) => {
 
 const STRIVER_SHEET_NAME = 'Striver A-Z';
 const REVISION_DAYS = [1, 3, 7, 15, 30, 60, 120];
+
+const sheetIconMap = {
+  'Striver A-Z': 'ti-list-check',
+  'Striver A–Z': 'ti-list-check',
+  'Rising Brain Sheet': 'ti-brain',
+  'Coder Army 180 Days': 'ti-calendar',
+  'Neetcode 150': 'ti-layout-grid',
+  'LeetCode Top Interview': 'ti-briefcase',
+};
 
 const difficultyMeta = {
   easy: { label: 'Common', className: 'difficulty-easy' },
@@ -675,7 +678,7 @@ export default function SheetPage() {
                 type="button"
                 onClick={() => switchSheet(s)}
               >
-                <ListChecks size={15} />
+                <i className={sheetIconMap[s.name] || 'ti-file'}></i>
                 <span>{s.name}</span>
                 {isActive && <span className="sidebar-badge">active</span>}
               </button>
@@ -708,7 +711,7 @@ export default function SheetPage() {
         </div>
 
         <label className="dashboard-search">
-          <Search size={14} />
+          <Search size={15} />
           <input
             type="text"
             value={search}
