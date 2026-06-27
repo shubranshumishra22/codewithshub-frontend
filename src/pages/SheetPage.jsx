@@ -205,6 +205,9 @@ export default function SheetPage() {
   const [notesQuestion, setNotesQuestion] = useState(null);
   const [notesDraft, setNotesDraft] = useState('');
   const [logicCheckQuestion, setLogicCheckQuestion] = useState(null);
+  
+  const [expandedSheetId, setExpandedSheetId] = useState(null);
+  const [hoveredSheetId, setHoveredSheetId] = useState(null);
 
   const toggleRevisionView = (questionId) => {
     setRevisionViewQuestionId((prev) => (prev === questionId ? null : questionId));
@@ -239,6 +242,12 @@ export default function SheetPage() {
       }
     }
   }, [allSheets, activeSheetId, activeSheetName]);
+
+  useEffect(() => {
+    if (activeSheetId && expandedSheetId === null) {
+      setExpandedSheetId(activeSheetId);
+    }
+  }, [activeSheetId, expandedSheetId]);
 
   const sheetId = activeSheetId || allSheets.find((s) => s.name === activeSheetName)?.id;
 
@@ -647,9 +656,10 @@ export default function SheetPage() {
   return (
     <main
       style={{
-        maxWidth: '960px',
-        margin: '80px auto 40px',
-        padding: '0 20px',
+        width: '100%',
+        maxWidth: '1200px',
+        margin: '40px auto',
+        padding: '0 16px',
         background: 'transparent',
         color: 'var(--text-secondary)',
         fontSize: '13px',
@@ -891,6 +901,9 @@ export default function SheetPage() {
         {/* Sheet rows */}
         {allSheets.map((s) => {
           const isActive = s.id === activeSheetId;
+          const isExpanded = s.id === expandedSheetId;
+          const isHovered = s.id === hoveredSheetId;
+
           const getSheetTotal = (name) => {
             if (name.includes('Striver')) return 455;
             if (name.includes('Rising Brain')) return 100;
@@ -917,20 +930,29 @@ export default function SheetPage() {
               {/* Row Header */}
               <div
                 onClick={() => {
-                  if (s.id !== activeSheetId) {
-                    setActiveSheetId(s.id);
-                    setActiveSheetName(s.name);
-                    localStorage.setItem('activeSheetId', s.id);
-                    localStorage.setItem('activeSheetName', s.name);
-                    toast.success(`Switched focus to: ${s.name}`);
+                  if (isExpanded) {
+                    setExpandedSheetId(null);
+                  } else {
+                    if (s.id !== activeSheetId) {
+                      setActiveSheetId(s.id);
+                      setActiveSheetName(s.name);
+                      setExpandedSheetId(s.id);
+                      localStorage.setItem('activeSheetId', s.id);
+                      localStorage.setItem('activeSheetName', s.name);
+                      toast.success(`Switched focus to: ${s.name}`);
+                    } else {
+                      setExpandedSheetId(s.id);
+                    }
                   }
                 }}
+                onMouseEnter={() => setHoveredSheetId(s.id)}
+                onMouseLeave={() => setHoveredSheetId(null)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '10px 20px',
-                  background: isActive ? 'var(--surface-1)' : 'transparent',
+                  background: (isActive || isHovered) ? 'var(--surface-1)' : 'transparent',
                   borderLeft: isActive ? '2px solid var(--blue-500)' : '2px solid transparent',
                   cursor: 'pointer',
                   transition: 'background 0.2s ease',
@@ -1006,7 +1028,7 @@ export default function SheetPage() {
                 <ChevronDown
                   size={13}
                   style={{
-                    transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                     transition: 'transform 0.2s ease',
                     color: 'var(--text-muted)',
                   }}
@@ -1014,7 +1036,7 @@ export default function SheetPage() {
               </div>
 
               {/* Active Sheet Expanded Topics Accordion */}
-              {isActive && (
+              {isExpanded && (
                 <div
                   style={{
                     background: 'var(--surface-2)',
