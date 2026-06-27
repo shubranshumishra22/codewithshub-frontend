@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, LogOut, Sparkles, Trophy } from 'lucide-react';
+import { BookOpen, LogOut, Sparkles, Trophy, Compass } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
@@ -54,38 +54,78 @@ export default function FloatingNavbar() {
           <span>DSA QUEST</span>
         </Link>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <Link
-            to="/progress"
-            className={`floating-navbar-link ${location.pathname === '/progress' ? 'is-active' : ''}`}
+            to="/roadmap/best-dsa-preparation-roadmap-for-beginners"
+            className={`floating-navbar-link ${location.pathname.startsWith('/roadmap') ? 'is-active' : ''}`}
           >
-            <Trophy size={16} />
-            <span>Progress</span>
+            <Compass size={16} />
+            <span>Roadmap</span>
           </Link>
 
-          <Link
-            to="/leaderboard"
-            className={`floating-navbar-link ${location.pathname === '/leaderboard' ? 'is-active' : ''}`}
-          >
-            <Trophy size={16} />
-            <span>Leaderboard</span>
-          </Link>
+          {user && (
+            <>
+              <Link
+                to="/progress"
+                className={`floating-navbar-link ${location.pathname === '/progress' ? 'is-active' : ''}`}
+              >
+                <Trophy size={16} />
+                <span>Progress</span>
+              </Link>
+
+              <Link
+                to="/leaderboard"
+                className={`floating-navbar-link ${location.pathname === '/leaderboard' ? 'is-active' : ''}`}
+              >
+                <Trophy size={16} />
+                <span>Leaderboard</span>
+              </Link>
+            </>
+          )}
         </div>
 
         <div className="floating-navbar-right">
-          <div className="floating-navbar-badge">
-            <Sparkles size={14} />
-            <span>{displayName}</span>
-          </div>
-          <button
-            className="floating-navbar-logout"
-            type="button"
-            onClick={handleLogout}
-            aria-label="Logout"
-          >
-            <LogOut size={16} />
-            <span>Logout</span>
-          </button>
+          {user ? (
+            <>
+              <div className="floating-navbar-badge">
+                <Sparkles size={14} />
+                <span>{displayName}</span>
+              </div>
+              <button
+                className="floating-navbar-logout"
+                type="button"
+                onClick={handleLogout}
+                aria-label="Logout"
+              >
+                <LogOut size={16} />
+                <span>Logout</span>
+              </button>
+            </>
+          ) : (
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <Link
+                to="/login"
+                className="floating-navbar-link"
+                style={{ border: 'none', background: 'transparent' }}
+              >
+                <span>Login</span>
+              </Link>
+              <Link
+                to="/signup"
+                className="floating-navbar-link"
+                style={{
+                  background: '#39d353',
+                  color: '#111214',
+                  border: 'none',
+                  fontWeight: '600',
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                }}
+              >
+                <span>Sign Up</span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import {
   BookOpen,
   ChevronDown,
@@ -8,6 +9,7 @@ import {
   Save,
   X,
   Brain,
+  ExternalLink,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient';
@@ -15,6 +17,20 @@ import { apiDelete, apiGet, apiPost } from '../lib/apiClient';
 import { useAuth } from '../context/AuthContext';
 import SiteFooter from '../components/SiteFooter';
 import LogicCheckModal from '../components/LogicCheckModal';
+
+const slugify = (text) => {
+  if (!text) return '';
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+};
+
 
 const STRIVER_SHEET_NAME = 'Striver A-Z';
 const REVISION_DAYS = [1, 3, 7, 15, 30, 60, 120];
@@ -769,18 +785,33 @@ export default function SheetPage() {
                                     />
                                   </td>
                                   <td data-label="Problem">
-                                    {question.leetcode_url ? (
-                                      <a
-                                        href={question.leetcode_url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="question-title"
-                                      >
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                      <Link to={`/question/${slugify(question.title)}`} style={{ fontWeight: '500', color: '#fff' }}>
                                         {question.title}
-                                      </a>
-                                    ) : (
-                                      <span className="question-title question-title-static">{question.title}</span>
-                                    )}
+                                      </Link>
+                                      <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem', marginTop: '2px' }}>
+                                        {question.leetcode_url && (
+                                          <a
+                                            href={question.leetcode_url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="question-title"
+                                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'rgba(255,255,255,0.45)' }}
+                                          >
+                                            <ExternalLink size={11} />
+                                            <span>Leetcode</span>
+                                          </a>
+                                        )}
+                                        <Link
+                                          to={`/question/${slugify(question.title)}`}
+                                          className="question-title"
+                                          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#39d353' }}
+                                        >
+                                          <BookOpen size={11} />
+                                          <span>Solution</span>
+                                        </Link>
+                                      </div>
+                                    </div>
                                   </td>
                                   <td data-label="Difficulty">
                                     <span className={`difficulty-badge ${difficulty.className}`}>

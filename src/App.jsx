@@ -8,6 +8,9 @@ import ProgressPage from './pages/ProgressPage';
 import SheetPage from './pages/SheetPage';
 import SignupPage from './pages/SignupPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import QuestionDetailPage from './pages/QuestionDetailPage';
+import RoadmapPage from './pages/RoadmapPage';
+import PublicSheetLandingPage from './pages/PublicSheetLandingPage';
 
 export default function App() {
   return (
@@ -39,6 +42,42 @@ export default function App() {
                 <FloatingNavbar />
                 <LeaderboardPage />
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/question/:questionSlug"
+            element={
+              <>
+                <FloatingNavbar />
+                <QuestionDetailPage />
+              </>
+            }
+          />
+          <Route
+            path="/roadmap/best-dsa-preparation-roadmap-for-beginners"
+            element={
+              <>
+                <FloatingNavbar />
+                <RoadmapPage />
+              </>
+            }
+          />
+          <Route
+            path="/sheets/top-50-array-questions-asked-in-amazon-interviews"
+            element={
+              <>
+                <FloatingNavbar />
+                <PublicSheetLandingPage />
+              </>
+            }
+          />
+          <Route
+            path="/sheets/sliding-window-pattern-problems-with-solutions"
+            element={
+              <>
+                <FloatingNavbar />
+                <PublicSheetLandingPage />
+              </>
             }
           />
           <Route path="/login" element={<LoginPage />} />
