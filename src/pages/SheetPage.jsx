@@ -5,6 +5,7 @@ import {
   BookOpen,
   ChevronDown,
   FilePenLine,
+  ListChecks,
   Search,
   Save,
   X,
@@ -674,7 +675,7 @@ export default function SheetPage() {
                 type="button"
                 onClick={() => switchSheet(s)}
               >
-                <BookOpen size={15} />
+                <ListChecks size={15} />
                 <span>{s.name}</span>
                 {isActive && <span className="sidebar-badge">active</span>}
               </button>
@@ -691,9 +692,7 @@ export default function SheetPage() {
 
       <div className="dashboard-main">
         <div className="progress-block">
-          <div className="progress-label">
-            {activeSheetName}
-          </div>
+          <div className="progress-eyebrow">Striver A–Z · Solving</div>
           <div className="progress-count">
             <span className="progress-solved">{stats.solvedCount}</span>
             <span className="progress-total"> / {stats.totalCount}</span>
