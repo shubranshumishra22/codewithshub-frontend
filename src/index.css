@@ -17,6 +17,15 @@
   --text-light: #d8dae0;
   --muted-light: #d8dae0;
   --soft-light: #999;
+
+  /* Custom Redesign Variable Tokens */
+  --text-primary: #ffffff;
+  --text-secondary: #d8dae0;
+  --text-muted: rgba(216, 218, 224, 0.6);
+  --surface-1: #1c1e21;
+  --surface-2: #111214;
+  --border: #242629;
+  --blue-500: #3b82f6;
 }
 
 html,
