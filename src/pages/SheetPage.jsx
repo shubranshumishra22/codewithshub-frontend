@@ -777,7 +777,7 @@ export default function SheetPage() {
           </button>
         )}
         <div className="progress-block">
-          <div className="progress-eyebrow">Striver A–Z · Solving</div>
+          <div className="progress-eyebrow">{activeSheetName} · Solving</div>
           <div className="progress-count">
             <span className="progress-solved">{stats.solvedCount}</span>
             <span className="progress-total"> / {stats.totalCount}</span>

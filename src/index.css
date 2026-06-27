@@ -1973,22 +1973,13 @@ h6 {
 }
 
 .step-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0;
+  font-size: var(--font-body-sm);
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.42);
+  color: var(--text-muted);
   letter-spacing: 0.05em;
-  width: 20px;
-  min-width: 20px;
+  width: 24px;
+  min-width: 24px;
   flex-shrink: 0;
-}
-
-.step-number::before {
-  content: '›';
-  font-size: 30px;
-  line-height: 1;
 }
 
 .step-info {
