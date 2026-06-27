@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
@@ -229,6 +229,42 @@ export default function SheetPage() {
   });
 
   const allSheets = sheetsQuery.data || [];
+
+  const [sidebarWidth, setSidebarWidth] = useState(() => {
+    const saved = localStorage.getItem('sidebarWidth');
+    return saved ? parseInt(saved, 10) : 220;
+  });
+  const [isDragging, setIsDragging] = useState(false);
+  const MIN_SIDEBAR = 180;
+  const MAX_SIDEBAR = 400;
+
+  useEffect(() => {
+    localStorage.setItem('sidebarWidth', String(sidebarWidth));
+  }, [sidebarWidth]);
+
+  const handleSidebarResize = useCallback((e) => {
+    const startX = e.clientX;
+    const startWidth = sidebarWidth;
+    setIsDragging(true);
+
+    const onMove = (e) => {
+      const w = startWidth + (e.clientX - startX);
+      setSidebarWidth(Math.max(MIN_SIDEBAR, Math.min(MAX_SIDEBAR, w)));
+    };
+
+    const onUp = () => {
+      setIsDragging(false);
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  }, [sidebarWidth]);
 
   const [activeSheetId, setActiveSheetId] = useState(() => localStorage.getItem('activeSheetId') || null);
   const [activeSheetName, setActiveSheetName] = useState(() => localStorage.getItem('activeSheetName') || STRIVER_SHEET_NAME);
@@ -666,7 +702,7 @@ export default function SheetPage() {
 
   return (
     <main className="dashboard-shell">
-      <aside className="dashboard-sidebar">
+      <aside className={`dashboard-sidebar${isDragging ? ' is-dragging' : ''}`} style={{ width: sidebarWidth }}>
         <div className="sidebar-section">
           <div className="sidebar-heading">DSA</div>
           {allSheets.map((s) => {
@@ -692,6 +728,7 @@ export default function SheetPage() {
           <span className="sidebar-item is-disabled">SQL</span>
         </div>
       </aside>
+      <div className={`sidebar-resize-handle${isDragging ? ' is-dragging' : ''}`} onMouseDown={handleSidebarResize} />
 
       <div className="dashboard-main">
         <div className="progress-block">
