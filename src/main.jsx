@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import App from './App';
 import './index.css';
-import '@tabler/icons-webfont/dist/tabler-icons.css';
 
 const queryClient = new QueryClient();
 
