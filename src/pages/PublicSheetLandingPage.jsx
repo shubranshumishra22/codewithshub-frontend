@@ -286,16 +286,7 @@ export default function PublicSheetLandingPage() {
 
                         <td data-label="Actions" style={{ textAlign: 'right' }}>
                           <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-                            <Link
-                              to={`/question/${slug}`}
-                              className="notes-button"
-                              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', padding: '6px 12px' }}
-                            >
-                              <Eye size={14} />
-                              <span>Solution</span>
-                            </Link>
-
-                            {q.leetcode_url && (
+                            {q.leetcode_url ? (
                               <a
                                 href={q.leetcode_url}
                                 target="_blank"
@@ -305,6 +296,17 @@ export default function PublicSheetLandingPage() {
                               >
                                 <ExternalLink size={14} />
                                 <span>Leetcode</span>
+                              </a>
+                            ) : (
+                              <a
+                                href={`https://www.geeksforgeeks.org/problems/${slug}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="notes-button"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', padding: '6px 12px' }}
+                              >
+                                <ExternalLink size={14} />
+                                <span>GFG</span>
                               </a>
                             )}
                           </div>

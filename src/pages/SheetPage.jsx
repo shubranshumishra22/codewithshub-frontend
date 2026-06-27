@@ -790,7 +790,7 @@ export default function SheetPage() {
                                         {question.title}
                                       </Link>
                                       <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem', marginTop: '2px' }}>
-                                        {question.leetcode_url && (
+                                        {question.leetcode_url ? (
                                           <a
                                             href={question.leetcode_url}
                                             target="_blank"
@@ -801,18 +801,22 @@ export default function SheetPage() {
                                             <ExternalLink size={11} />
                                             <span>Leetcode</span>
                                           </a>
+                                        ) : (
+                                          <a
+                                            href={`https://www.geeksforgeeks.org/problems/${slugify(question.title)}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="question-title"
+                                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'rgba(255,255,255,0.45)' }}
+                                          >
+                                            <ExternalLink size={11} />
+                                            <span>GFG</span>
+                                          </a>
                                         )}
-                                        <Link
-                                          to={`/question/${slugify(question.title)}`}
-                                          className="question-title"
-                                          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#39d353' }}
-                                        >
-                                          <BookOpen size={11} />
-                                          <span>Solution</span>
-                                        </Link>
                                       </div>
                                     </div>
                                   </td>
+
                                   <td data-label="Difficulty">
                                     <span className={`difficulty-badge ${difficulty.className}`}>
                                       {difficulty.label}
