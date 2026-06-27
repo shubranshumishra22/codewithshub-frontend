@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, BookOpen, Brain, Check, Copy, ExternalLink, ShieldAlert, X } from 'lucide-react';
+import { ArrowLeft, BookOpen, Brain, Check, Copy, ExternalLink, ShieldAlert, X, Play } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { apiGet, apiPost, apiDelete } from '../lib/apiClient';
 import { useAuth } from '../context/AuthContext';
@@ -184,7 +184,7 @@ export default function QuestionDetailPage() {
             {question.title}
           </h1>
 
-          <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+          <div style={{ display: 'flex', gap: '12px', marginTop: '8px', flexWrap: 'wrap' }}>
             {question.leetcode_url && (
               <a
                 href={question.leetcode_url}
@@ -195,6 +195,18 @@ export default function QuestionDetailPage() {
               >
                 <ExternalLink size={14} />
                 Solve on LeetCode
+              </a>
+            )}
+            {question.video_url && (
+              <a
+                href={question.video_url}
+                target="_blank"
+                rel="noreferrer"
+                className="sheet-progress-link"
+                style={{ fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#ff4b4b' }}
+              >
+                <Play size={14} fill="#ff4b4b" color="#ff4b4b" />
+                Watch Video Explanation
               </a>
             )}
             <Link

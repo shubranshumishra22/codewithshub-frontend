@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { BookOpen, Brain, ChevronRight, Eye, ExternalLink, ShieldAlert, Sparkles, X } from 'lucide-react';
+import { BookOpen, Brain, ChevronRight, Eye, ExternalLink, ShieldAlert, Sparkles, X, Play } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { apiGet, apiPost, apiDelete } from '../lib/apiClient';
 import { useAuth } from '../context/AuthContext';
@@ -349,6 +349,37 @@ export default function PublicSheetLandingPage() {
                                   style={{ width: '14px', height: '14px', objectFit: 'contain', verticalAlign: 'middle' }}
                                 />
                                 <span>GFG</span>
+                              </a>
+                            )}
+
+                            {q.video_url && (
+                              <a
+                                href={q.video_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="notes-button"
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '6px',
+                                  fontSize: '0.8rem',
+                                  padding: '6px 12px',
+                                  border: '0.5px solid #242629',
+                                  borderRadius: '6px',
+                                  color: '#ff4b4b',
+                                  transition: 'border-color 0.2s ease, background 0.2s ease',
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.borderColor = 'rgba(255,75,75,0.4)';
+                                  e.currentTarget.style.background = 'rgba(255,75,75,0.05)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.borderColor = '#242629';
+                                  e.currentTarget.style.background = '#1c1e21';
+                                }}
+                              >
+                                <Play size={12} fill="#ff4b4b" color="#ff4b4b" />
+                                <span>Video</span>
                               </a>
                             )}
                           </div>

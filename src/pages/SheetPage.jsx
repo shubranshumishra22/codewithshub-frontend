@@ -10,6 +10,7 @@ import {
   X,
   Brain,
   ExternalLink,
+  Play,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient';
@@ -789,7 +790,7 @@ export default function SheetPage() {
                                       <Link to={`/question/${slugify(question.title)}`} style={{ fontWeight: '500', color: '#fff' }}>
                                         {question.title}
                                       </Link>
-                                      <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem', marginTop: '2px' }}>
+                                      <div style={{ display: 'flex', gap: '8px', fontSize: '0.75rem', marginTop: '2px', flexWrap: 'wrap' }}>
                                         {question.leetcode_url ? (
                                           <a
                                             href={question.leetcode_url}
@@ -859,6 +860,39 @@ export default function SheetPage() {
                                               style={{ width: '12px', height: '12px', objectFit: 'contain', verticalAlign: 'middle' }}
                                             />
                                             <span>GFG</span>
+                                          </a>
+                                        )}
+
+                                        {question.video_url && (
+                                          <a
+                                            href={question.video_url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="question-title"
+                                            style={{
+                                              display: 'inline-flex',
+                                              alignItems: 'center',
+                                              gap: '6px',
+                                              color: '#ff4b4b',
+                                              background: '#1c1e21',
+                                              border: '0.5px solid #242629',
+                                              padding: '4px 10px',
+                                              borderRadius: '6px',
+                                              fontSize: '0.75rem',
+                                              fontWeight: '500',
+                                              transition: 'border-color 0.2s ease, background 0.2s ease',
+                                            }}
+                                            onMouseEnter={(e) => {
+                                              e.currentTarget.style.borderColor = 'rgba(255,75,75,0.4)';
+                                              e.currentTarget.style.background = 'rgba(255,75,75,0.05)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                              e.currentTarget.style.borderColor = '#242629';
+                                              e.currentTarget.style.background = '#1c1e21';
+                                            }}
+                                          >
+                                            <Play size={11} fill="#ff4b4b" color="#ff4b4b" />
+                                            <span>Video</span>
                                           </a>
                                         )}
                                       </div>
