@@ -9,6 +9,7 @@ import SheetPage from './pages/SheetPage';
 import SignupPage from './pages/SignupPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import QuestionDetailPage from './pages/QuestionDetailPage';
+import ResumeAIPage from './pages/ResumeAIPage';
 import RoadmapPage from './pages/RoadmapPage';
 import PublicSheetLandingPage from './pages/PublicSheetLandingPage';
 
@@ -32,6 +33,15 @@ export default function App() {
               <ProtectedRoute>
                 <FloatingNavbar />
                 <ProgressPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/resume-ai"
+            element={
+              <ProtectedRoute>
+                <FloatingNavbar />
+                <ResumeAIPage />
               </ProtectedRoute>
             }
           />

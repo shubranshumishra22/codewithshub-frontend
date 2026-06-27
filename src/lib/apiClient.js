@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { supabase } from './supabaseClient';
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
@@ -23,6 +23,12 @@ export function apiGet(url) {
 
 export function apiPost(url, data) {
   return apiRequest('post', url, data);
+}
+
+export function apiPostForm(url, formData) {
+  return getAuthHeaders().then((headers) =>
+    api.post(url, formData, { headers })
+  );
 }
 
 export function apiDelete(url) {

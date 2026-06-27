@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, LogOut, Sparkles, Trophy, Compass } from 'lucide-react';
+import { BookOpen, FileText, LogOut, Sparkles, Trophy, Compass } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
@@ -65,6 +65,14 @@ export default function FloatingNavbar() {
 
           {user && (
             <>
+              <Link
+                to="/resume-ai"
+                className={`floating-navbar-link ${location.pathname === '/resume-ai' ? 'is-active' : ''}`}
+              >
+                <FileText size={16} />
+                <span>Resume AI</span>
+              </Link>
+
               <Link
                 to="/progress"
                 className={`floating-navbar-link ${location.pathname === '/progress' ? 'is-active' : ''}`}
