@@ -38,7 +38,7 @@ const sheetIconMap = {
   'Striver A-Z': 'ti-list-check',
   'Striver A–Z': 'ti-list-check',
   'Rising Brain Sheet': 'ti-brain',
-  'Coder Army 180 Days': 'ti-calendar',
+  'AI/ML': 'ti-cpu',
   'Neetcode 150': 'ti-layout-grid',
   'LeetCode Top Interview': 'ti-briefcase',
 };
@@ -203,6 +203,19 @@ function RevisionCheckboxes({ revisions, onComplete, onUncomplete }) {
   );
 }
 
+const CONCEPTUAL_SHEETS = [
+  'AI/ML'
+];
+
+const AIML_CATEGORIES = [
+  { id: 'ML', label: 'Machine Learning (ML)' },
+  { id: 'DL', label: 'Deep Learning (DL)' },
+  { id: 'PyTorch', label: 'PyTorch' },
+  { id: 'NLP', label: 'NLP' },
+  { id: 'RAG', label: 'RAG' },
+  { id: 'Agentic', label: 'Agentic AI' }
+];
+
 export default function SheetPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -212,6 +225,7 @@ export default function SheetPage() {
   const [notesQuestion, setNotesQuestion] = useState(null);
   const [notesDraft, setNotesDraft] = useState('');
   const [logicCheckQuestion, setLogicCheckQuestion] = useState(null);
+  const [openCategory, setOpenCategory] = useState('ML');
   
   const [hoveredSidebarId, setHoveredSidebarId] = useState(null);
   const [hoveredStepId, setHoveredStepId] = useState(null);
@@ -581,16 +595,6 @@ export default function SheetPage() {
     },
   });
 
-  useEffect(() => {
-    if (!topicsQuery.data?.topics?.length) {
-      return;
-    }
-
-    if (!openTopicId) {
-      setOpenTopicId(topicsQuery.data.topics[0].id);
-    }
-  }, [topicsQuery.data]);
-
   const progressByQuestion = useMemo(() => {
     return (progressQuery.data || []).reduce((acc, progress) => {
       acc[progress.question_id] = progress;
@@ -662,6 +666,56 @@ export default function SheetPage() {
       .filter((topic) => topic.filteredQuestions.length > 0);
   }, [progressByQuestion, revisionByQuestion, search, topicsQuery.data]);
 
+  const isConceptual = useMemo(() => {
+    return CONCEPTUAL_SHEETS.includes(activeSheetName);
+  }, [activeSheetName]);
+
+  // Group topics for conceptual sheets by category, then by module
+  const groupedCategories = useMemo(() => {
+    if (!isConceptual) return null;
+
+    // Order: ML, DL, PyTorch, NLP, RAG, Agentic
+    const categoriesOrder = ['ML', 'DL', 'PyTorch', 'NLP', 'RAG', 'Agentic'];
+    const groups = {};
+
+    categoriesOrder.forEach((cat) => {
+      groups[cat] = {};
+    });
+
+    topics.forEach((topic) => {
+      const cat = topic.category || 'ML';
+      const mod = topic.module || 'General';
+
+      if (!groups[cat]) {
+        groups[cat] = {};
+      }
+      if (!groups[cat][mod]) {
+        groups[cat][mod] = [];
+      }
+      groups[cat][mod].push(topic);
+    });
+
+    return groups;
+  }, [topics, isConceptual]);
+
+  // Auto-open first topic when active sheet or open category changes
+  const lastOpenedTrack = useRef('');
+  useEffect(() => {
+    const trackKey = `${activeSheetId}-${openCategory}`;
+    if (activeSheetId && topics.length > 0) {
+      if (lastOpenedTrack.current !== trackKey) {
+        lastOpenedTrack.current = trackKey;
+        const categoryTopics = topics.filter((t) => {
+          const cat = t.category || 'ML';
+          return cat === openCategory;
+        });
+        if (categoryTopics.length > 0) {
+          setOpenTopicId(categoryTopics[0].id);
+        }
+      }
+    }
+  }, [activeSheetId, openCategory, topics]);
+
   const stats = useMemo(() => {
     const allQuestions = topicsQuery.data?.topics?.flatMap((topic) => topic.questions) || [];
     const solvedCount = allQuestions.filter((question) => progressByQuestion[question.id]?.is_solved).length;
@@ -705,8 +759,180 @@ export default function SheetPage() {
       setActiveSheetName(s.name);
       localStorage.setItem('activeSheetId', s.id);
       localStorage.setItem('activeSheetName', s.name);
+      setOpenCategory('ML'); // Reset active sub-tab category
       toast.success(`Switched focus to: ${s.name}`);
     }
+  };
+
+  const renderTopic = (topic) => {
+    const isOpen = openTopicId === topic.id;
+    const totalCount = topic.questions.length;
+    const visibleQuestions = topic.filteredQuestions;
+    const topicProgress = totalCount > 0 ? (topic.solvedCount / totalCount) * 100 : 0;
+
+    return (
+      <section key={topic.id} className={`ds-section${isOpen ? ' is-open' : ''}`}>
+        <button
+          className="ds-section-row"
+          type="button"
+          onClick={() => setOpenTopicId(isOpen ? null : topic.id)}
+        >
+          <span className="ds-section-num">{String(topic.order_index).padStart(2, '0')}</span>
+          <div className="ds-section-info">
+            <span className="ds-section-name">{topic.name}</span>
+            <span className="ds-section-desc">Foundational concepts · Core patterns · Key techniques</span>
+          </div>
+          <span className="ds-section-progress">{topic.solvedCount} / {totalCount}</span>
+          <span className="ds-section-bar">
+            <span style={{ width: `${topicProgress}%` }} />
+          </span>
+          <ChevronDown size={16} className="ds-section-chevron" />
+        </button>
+
+        <div className="ds-section-body-shell" style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}>
+          <div className="ds-section-body">
+            <div className="ds-table-wrap">
+              <table className="ds-table">
+                <thead>
+                  <tr>
+                    <th className="checkbox-column">Done</th>
+                    <th>Problem</th>
+                    <th>Difficulty</th>
+                    <th>Notes</th>
+                    {!isConceptual && <th>Logic Check</th>}
+                    <th>Revision</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visibleQuestions.map((question) => {
+                    const difficulty = difficultyMeta[question.difficulty] || difficultyMeta.medium;
+                    const noteCount = (question.notes || '').trim().length;
+                    const isSolved = question.isSolved;
+
+                    return (
+                      <tr key={question.id}>
+                        <td className="checkbox-column">
+                          <Checkbox
+                            checked={isSolved}
+                            disabled={progressMutationPending}
+                            onChange={() => {
+                              if (isSolved) {
+                                unmarkSolvedMutation.mutate(question.id);
+                              } else {
+                                markSolvedMutation.mutate(question.id);
+                              }
+                            }}
+                          />
+                        </td>
+                        <td>
+                          <div className="ds-q-group">
+                            <Link
+                              to={`/question/${slugify(question.title)}`}
+                              className="ds-q-link"
+                            >
+                              {question.title}
+                            </Link>
+                            <div className="ds-q-links">
+                              {!isConceptual && (
+                                question.leetcode_url ? (
+                                  <a href={question.leetcode_url} target="_blank" rel="noreferrer" className="ds-q-chip">
+                                    <img src="https://leetcode.com/favicon.ico" alt="Leetcode" className="ds-q-favicon" />
+                                    <span>Leetcode</span>
+                                  </a>
+                                ) : (
+                                  <a href={`https://www.geeksforgeeks.org/problems/${slugify(question.title)}`} target="_blank" rel="noreferrer" className="ds-q-chip">
+                                    <img src="https://www.geeksforgeeks.org/favicon.ico" alt="GFG" className="ds-q-favicon" />
+                                    <span>GFG</span>
+                                  </a>
+                                )
+                              )}
+                              {question.video_url && (
+                                <a href={question.video_url} target="_blank" rel="noreferrer" className="ds-q-chip ds-q-chip-video">
+                                  <Play size={10} />
+                                  <span>Video</span>
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span className={`ds-diff-badge ${difficulty.className}`}>
+                            {difficulty.label}
+                          </span>
+                        </td>
+                        <td>
+                          <button className="ds-q-btn" type="button" onClick={() => openNotes(question)}>
+                            <FilePenLine size={12} />
+                            <span>{noteCount > 0 ? 'Edit' : 'Add'}</span>
+                          </button>
+                        </td>
+                        {!isConceptual && (
+                          <td>
+                            <button className="ds-q-btn" type="button" onClick={() => setLogicCheckQuestion(question)}>
+                              <Brain size={12} />
+                              <span>{isSolved ? 'Verify' : 'Unlock'}</span>
+                            </button>
+                          </td>
+                        )}
+                        <td>
+                          {isConceptual ? (
+                            <div className="revision-single-wrapper">
+                              {isSolved ? (
+                                (() => {
+                                  const rev1 = question.allRevisions?.find((r) => r.revision_day === 1);
+                                  const checked = rev1?.is_completed || false;
+                                  if (!rev1) {
+                                    return <span className="revision-syncing-text">Syncing...</span>;
+                                  }
+                                  return (
+                                    <label className="quest-checkbox revision-single-checkbox">
+                                      <input
+                                        type="checkbox"
+                                        checked={checked}
+                                        onChange={() => {
+                                          if (checked) {
+                                            uncompleteRevisionMutation.mutate(rev1.id);
+                                          } else {
+                                            completeRevisionMutation.mutate(rev1.id);
+                                          }
+                                        }}
+                                      />
+                                      <span aria-hidden="true" />
+                                    </label>
+                                  );
+                                })()
+                              ) : (
+                                <span className="text-muted">—</span>
+                              )}
+                            </div>
+                          ) : (
+                            <RevisionCell
+                              question={question}
+                              onComplete={(revId) => completeRevisionMutation.mutate(revId)}
+                              onUncomplete={(revId) => uncompleteRevisionMutation.mutate(revId)}
+                              onSyncRevision={(qId) => syncRevisionMutation.mutate(qId)}
+                              isExpanded={revisionViewQuestionId === question.id}
+                              onToggle={toggleRevisionView}
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {visibleQuestions.length === 0 ? (
+                    <tr>
+                      <td colSpan={isConceptual ? 5 : 6}>
+                        <div className="ds-empty-row">No questions match your search.</div>
+                      </td>
+                    </tr>
+                  ) : null}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   };
 
   return (
@@ -715,11 +941,19 @@ export default function SheetPage() {
         {/* ── Hero ── */}
         <div className="dh-hero">
           <h1 className="dh-title">{activeSheetName}</h1>
-          <p className="dh-subtitle">Master data structures and algorithms one pattern at a time.</p>
+          <p className="dh-subtitle">
+            {isConceptual
+              ? "Master machine learning, deep learning, NLP, and agentic AI one concept at a time."
+              : "Master data structures and algorithms one pattern at a time."}
+          </p>
           <div className="dh-meta">
-            <span className="dh-count">{stats.solvedCount} solved</span>
+            <span className="dh-count">
+              {stats.solvedCount} {isConceptual ? 'completed' : 'solved'}
+            </span>
             <span className="dh-divider">·</span>
-            <span className="dh-count">{stats.totalCount} total problems</span>
+            <span className="dh-count">
+              {stats.totalCount} {isConceptual ? 'total lessons' : 'total problems'}
+            </span>
           </div>
           <div className="dh-track">
             <div className="dh-track-fill" style={{ width: `${stats.totalCount > 0 ? (stats.solvedCount / stats.totalCount) * 100 : 0}%` }} />
@@ -769,142 +1003,52 @@ export default function SheetPage() {
           <div className="ds-empty ds-empty-error">
             <p>{hasError.message || 'Failed to load the DSA sheet.'}</p>
           </div>
-        ) : (
-          <div className="ds-section-list">
-            {topics.map((topic, index) => {
-              const isOpen = openTopicId === topic.id;
-              const totalCount = topic.questions.length;
-              const visibleQuestions = topic.filteredQuestions;
-              const topicProgress = totalCount > 0 ? (topic.solvedCount / totalCount) * 100 : 0;
+        ) : topics.length === 0 ? (
+          <div className="ds-empty animate-fade-in">
+            <p>No topics or lessons match your search query.</p>
+          </div>
+        ) : isConceptual && groupedCategories ? (
+          <div className="vertical-sheet-layout animate-fade-in">
+            {AIML_CATEGORIES.map((cat) => {
+              const isOpen = openCategory === cat.id;
+              const moduleGroups = groupedCategories[cat.id] || {};
+              const moduleEntries = Object.entries(moduleGroups);
+
+              // Skip rendering if no topics in this category match search
+              if (moduleEntries.length === 0) return null;
 
               return (
-                <section key={topic.id} className={`ds-section${isOpen ? ' is-open' : ''}`}>
+                <div key={cat.id} className={`category-accordion-section${isOpen ? ' is-open' : ''}`}>
                   <button
-                    className="ds-section-row"
+                    className="category-accordion-header"
                     type="button"
-                    onClick={() => setOpenTopicId(isOpen ? null : topic.id)}
+                    onClick={() => setOpenCategory(isOpen ? null : cat.id)}
                   >
-                    <span className="ds-section-num">{String(index + 1).padStart(2, '0')}</span>
-                    <div className="ds-section-info">
-                      <span className="ds-section-name">{topic.name}</span>
-                      <span className="ds-section-desc">Foundational concepts · Core patterns · Key techniques</span>
-                    </div>
-                    <span className="ds-section-progress">{topic.solvedCount} / {totalCount}</span>
-                    <span className="ds-section-bar">
-                      <span style={{ width: `${topicProgress}%` }} />
-                    </span>
-                    <ChevronDown size={16} className="ds-section-chevron" />
+                    <span className="category-accordion-title">{cat.label}</span>
+                    <ChevronDown size={20} className="category-accordion-chevron" />
                   </button>
 
-                  <div className="ds-section-body-shell" style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}>
-                    <div className="ds-section-body">
-                      <div className="ds-table-wrap">
-                        <table className="ds-table">
-                          <thead>
-                            <tr>
-                              <th className="checkbox-column">Done</th>
-                              <th>Problem</th>
-                              <th>Difficulty</th>
-                              <th>Notes</th>
-                              <th>Logic Check</th>
-                              <th>Revision</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {visibleQuestions.map((question) => {
-                              const difficulty = difficultyMeta[question.difficulty] || difficultyMeta.medium;
-                              const noteCount = (question.notes || '').trim().length;
-                              const isSolved = question.isSolved;
-
-                              return (
-                                <tr key={question.id}>
-                                  <td className="checkbox-column">
-                                    <Checkbox
-                                      checked={isSolved}
-                                      disabled={progressMutationPending}
-                                      onChange={() => {
-                                        if (isSolved) {
-                                          unmarkSolvedMutation.mutate(question.id);
-                                        } else {
-                                          markSolvedMutation.mutate(question.id);
-                                        }
-                                      }}
-                                    />
-                                  </td>
-                                  <td>
-                                    <div className="ds-q-group">
-                                      <Link
-                                        to={`/question/${slugify(question.title)}`}
-                                        className="ds-q-link"
-                                      >
-                                        {question.title}
-                                      </Link>
-                                      <div className="ds-q-links">
-                                        {question.leetcode_url ? (
-                                          <a href={question.leetcode_url} target="_blank" rel="noreferrer" className="ds-q-chip">
-                                            <img src="https://leetcode.com/favicon.ico" alt="Leetcode" className="ds-q-favicon" />
-                                            <span>Leetcode</span>
-                                          </a>
-                                        ) : (
-                                          <a href={`https://www.geeksforgeeks.org/problems/${slugify(question.title)}`} target="_blank" rel="noreferrer" className="ds-q-chip">
-                                            <img src="https://www.geeksforgeeks.org/favicon.ico" alt="GFG" className="ds-q-favicon" />
-                                            <span>GFG</span>
-                                          </a>
-                                        )}
-                                        {question.video_url && (
-                                          <a href={question.video_url} target="_blank" rel="noreferrer" className="ds-q-chip ds-q-chip-video">
-                                            <Play size={10} />
-                                            <span>Video</span>
-                                          </a>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <span className={`ds-diff-badge ${difficulty.className}`}>
-                                      {difficulty.label}
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <button className="ds-q-btn" type="button" onClick={() => openNotes(question)}>
-                                      <FilePenLine size={12} />
-                                      <span>{noteCount > 0 ? 'Edit' : 'Add'}</span>
-                                    </button>
-                                  </td>
-                                  <td>
-                                    <button className="ds-q-btn" type="button" onClick={() => setLogicCheckQuestion(question)}>
-                                      <Brain size={12} />
-                                      <span>{isSolved ? 'Verify' : 'Unlock'}</span>
-                                    </button>
-                                  </td>
-                                  <td>
-                                    <RevisionCell
-                                      question={question}
-                                      onComplete={(revId) => completeRevisionMutation.mutate(revId)}
-                                      onUncomplete={(revId) => uncompleteRevisionMutation.mutate(revId)}
-                                      onSyncRevision={(qId) => syncRevisionMutation.mutate(qId)}
-                                      isExpanded={revisionViewQuestionId === question.id}
-                                      onToggle={toggleRevisionView}
-                                    />
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                            {visibleQuestions.length === 0 ? (
-                              <tr>
-                                <td colSpan={6}>
-                                  <div className="ds-empty-row">No questions match your search.</div>
-                                </td>
-                              </tr>
-                            ) : null}
-                          </tbody>
-                        </table>
+                  <div className="category-accordion-body-shell" style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}>
+                    <div className="category-accordion-body">
+                      <div className="category-modules-list">
+                        {moduleEntries.map(([moduleName, moduleTopics]) => (
+                          <div key={moduleName} className="module-group">
+                            <h3 className="module-title">{moduleName}</h3>
+                            <div className="module-topics-list">
+                              {moduleTopics.map((topic) => renderTopic(topic))}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
-                </section>
+                </div>
               );
             })}
+          </div>
+        ) : (
+          <div className="ds-section-list">
+            {topics.map((topic) => renderTopic(topic))}
           </div>
         )}
 
