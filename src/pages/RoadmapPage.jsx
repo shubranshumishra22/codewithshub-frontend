@@ -52,10 +52,6 @@ export default function RoadmapPage() {
         
         {/* Header Block */}
         <div className="sheet-header" style={{ flexDirection: 'column', gap: '8px', marginBottom: '40px', textAlign: 'center', alignItems: 'center' }}>
-          <div className="sheet-kicker" style={{ display: 'inline-flex', padding: '6px 16px', background: 'rgba(57, 211, 83, 0.1)', borderColor: 'rgba(57, 211, 83, 0.3)', color: '#39d353' }}>
-            <Compass size={14} style={{ marginRight: '6px' }} />
-            <span>LEARNING PATHWAY</span>
-          </div>
           <h1 style={{ marginTop: '16px', color: '#fff', fontSize: 'clamp(2rem, 6vw, 3rem)' }}>
             Best DSA Preparation Roadmap
           </h1>
