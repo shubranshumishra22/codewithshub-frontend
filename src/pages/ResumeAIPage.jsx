@@ -134,6 +134,7 @@ export default function ResumeAIPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [result, setResult] = useState(null);
+  const [analysisError, setAnalysisError] = useState(null);
   
   const [dragOver, setDragOver] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -208,11 +209,13 @@ export default function ResumeAIPage() {
     if (!canAnalyze) return;
     setIsAnalyzing(true);
     setResult(null);
+    setAnalysisError(null);
     try {
       const response = await apiPost('/resume-ai/analyze', { resumeText, jobDescription });
       setResult(response.data);
     } catch (err) {
       console.error(err);
+      setAnalysisError(err.response?.data?.error || 'Analysis failed. Please try again.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -371,7 +374,12 @@ export default function ResumeAIPage() {
           
           <div className="mt-4 h-6 flex items-center justify-center">
              <AnimatePresence mode="wait">
-              {result && !isAnalyzing ? (
+              {analysisError && !isAnalyzing ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-xs text-[#ff5757]">
+                  <AlertTriangle size={12} />
+                  <span>{analysisError}</span>
+                </motion.div>
+              ) : result && !isAnalyzing ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-xs text-[#6ee7b7]">
                   <CheckCircle size={12} />
                   <span>Match report ready</span>
