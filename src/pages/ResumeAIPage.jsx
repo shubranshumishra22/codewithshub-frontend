@@ -135,6 +135,11 @@ export default function ResumeAIPage() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [result, setResult] = useState(null);
   const [analysisError, setAnalysisError] = useState(null);
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [optimizationError, setOptimizationError] = useState(null);
+  const [chatMessage, setChatMessage] = useState('');
+  const [chatHistory, setChatHistory] = useState([]);
+  const [isChatting, setIsChatting] = useState(false);
   
   const [dragOver, setDragOver] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -210,14 +215,79 @@ export default function ResumeAIPage() {
     setIsAnalyzing(true);
     setResult(null);
     setAnalysisError(null);
+    setOptimizationError(null);
+    setChatHistory([]);
+    
+    let analysisData = null;
     try {
       const response = await apiPost('/resume-ai/analyze', { resumeText, jobDescription });
-      setResult(response.data);
+      analysisData = response.data.analysis;
+      setResult({ analysis: analysisData });
     } catch (err) {
       console.error(err);
       setAnalysisError(err.response?.data?.error || 'Analysis failed. Please try again.');
+      setIsAnalyzing(false);
+      return;
     } finally {
       setIsAnalyzing(false);
+    }
+    
+    // Now trigger the optimization in the background
+    setIsOptimizing(true);
+    try {
+      const response = await apiPost('/resume-ai/optimize', { resumeText, jobDescription, analysis: analysisData });
+      setResult((prev) => ({
+        ...prev,
+        rewrittenResume: response.data.rewrittenResume,
+        finalResume: response.data.finalResume,
+        review: {
+          atsNotes: [],
+          hiringManagerNotes: [],
+          formattingSuggestions: [],
+          explainChanges: [],
+        }
+      }));
+    } catch (err) {
+      console.error(err);
+      setOptimizationError(err.response?.data?.error || 'PDF compilation failed in the background.');
+    } finally {
+      setIsOptimizing(false);
+    }
+  };
+
+  const handleSendChatMessage = async (e) => {
+    e.preventDefault();
+    if (!chatMessage.trim() || !result?.finalResume || isChatting) return;
+
+    const userMsgText = chatMessage.trim();
+    setChatMessage('');
+    setIsChatting(true);
+    setChatHistory((prev) => [...prev, { sender: 'user', text: userMsgText }]);
+
+    try {
+      const response = await apiPost('/resume-ai/chat', {
+        currentResume: result.finalResume,
+        userMessage: userMsgText,
+        jobDescription,
+      });
+
+      setResult((prev) => ({
+        ...prev,
+        finalResume: response.data.finalResume,
+      }));
+
+      setChatHistory((prev) => [
+        ...prev,
+        { sender: 'assistant', text: 'Resume updated successfully!' },
+      ]);
+    } catch (err) {
+      console.error(err);
+      setChatHistory((prev) => [
+        ...prev,
+        { sender: 'assistant', text: `Error: ${err.response?.data?.error || 'Failed to update resume.'}` },
+      ]);
+    } finally {
+      setIsChatting(false);
     }
   };
 
@@ -515,14 +585,26 @@ export default function ResumeAIPage() {
                   )}
 
                   <div className="flex flex-col items-center gap-4 pt-10 pb-4">
-                    <div className="flex gap-3 mt-2">
-                      <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => handleDownload('pdf')} className="px-6 py-3 rounded-full bg-[#d4a843] text-[#0a0a0c] text-sm font-semibold flex items-center gap-2 hover:bg-[#e2bb59] transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a843] focus:ring-offset-2 focus:ring-offset-[#0a0a0c]">
-                        <Download size={16} /> Download Professional PDF
-                      </motion.button>
-                      <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => handleDownload('docx')} className="px-6 py-3 rounded-full bg-[#131316] text-[#f2f2f4] text-sm font-semibold flex items-center gap-2 border border-[#232327] hover:border-[#2f2f34] transition-colors focus:outline-none focus:ring-2 focus:ring-[#55555d] focus:ring-offset-2 focus:ring-offset-[#0a0a0c]">
-                        <Download size={16} /> Download DOCX
-                      </motion.button>
-                    </div>
+                    {isOptimizing ? (
+                      <div className="flex items-center gap-2 text-sm text-[#d4a843] bg-[rgba(212,168,67,0.06)] px-5 py-3 rounded-full border border-[rgba(212,168,67,0.15)]">
+                        <RefreshCw size={14} className="animate-spin text-[#d4a843]" />
+                        <span>Compiling high-fidelity PDF/DOCX in the background...</span>
+                      </div>
+                    ) : optimizationError ? (
+                      <div className="flex items-center gap-2 text-sm text-[#ff5757] bg-[rgba(255,87,87,0.06)] px-5 py-3 rounded-full border border-[rgba(255,87,87,0.15)]">
+                        <AlertTriangle size={14} />
+                        <span>{optimizationError}</span>
+                      </div>
+                    ) : result?.finalResume ? (
+                      <div className="flex gap-3 mt-2">
+                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => handleDownload('pdf')} className="px-6 py-3 rounded-full bg-[#d4a843] text-[#0a0a0c] text-sm font-semibold flex items-center gap-2 hover:bg-[#e2bb59] transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a843] focus:ring-offset-2 focus:ring-offset-[#0a0a0c]">
+                          <Download size={16} /> Download Professional PDF
+                        </motion.button>
+                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => handleDownload('docx')} className="px-6 py-3 rounded-full bg-[#131316] text-[#f2f2f4] text-sm font-semibold flex items-center gap-2 border border-[#232327] hover:border-[#2f2f34] transition-colors focus:outline-none focus:ring-2 focus:ring-[#55555d] focus:ring-offset-2 focus:ring-offset-[#0a0a0c]">
+                          <Download size={16} /> Download DOCX
+                        </motion.button>
+                      </div>
+                    ) : null}
                   </div>
                 </motion.div>
               )}
@@ -552,6 +634,52 @@ export default function ResumeAIPage() {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Resume Tuner Chat Module */}
+            {result?.finalResume && (
+              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mt-12 p-6 rounded-2xl bg-[#131316] border border-[#232327] max-w-[650px] mx-auto">
+                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#232327]">
+                  <Sparkles size={16} className="text-[#d4a843]" />
+                  <h3 className="text-sm font-semibold text-[#f2f2f4]">Resume Customizer Chat</h3>
+                </div>
+                
+                <div className="h-[220px] overflow-y-auto mb-4 p-3 rounded-xl bg-[#0a0a0c] border border-[#232327] space-y-3" style={{ scrollbarWidth: 'thin' }}>
+                  {chatHistory.length === 0 ? (
+                    <p className="text-xs text-[#55555d] text-center pt-20">Ask AI to make visual changes, add credentials, or tune bullet points...</p>
+                  ) : (
+                    chatHistory.map((msg, i) => (
+                      <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-[80%] rounded-xl px-3 py-2 text-xs leading-relaxed ${msg.sender === 'user' ? 'bg-[#d4a843] text-[#0a0a0c]' : 'bg-[#1c1c22] text-[#93939c] border border-[#2d2d35]'}`}>
+                          {msg.text}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  {isChatting && (
+                    <div className="flex justify-start">
+                      <div className="bg-[#1c1c22] border border-[#2d2d35] rounded-xl px-3 py-2 text-xs text-[#55555d] flex items-center gap-1.5">
+                        <RefreshCw size={10} className="animate-spin text-[#d4a843]" />
+                        <span>Applying requested changes...</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <form onSubmit={handleSendChatMessage} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={chatMessage}
+                    onChange={(e) => setChatMessage(e.target.value)}
+                    placeholder="e.g. change accent color to blue, or add FastAPI to backend skills..."
+                    disabled={isChatting}
+                    className="flex-1 bg-[#0a0a0c] border border-[#232327] rounded-xl px-4 py-2.5 text-xs text-[#f2f2f4] placeholder:text-[#55555d] focus:outline-none focus:border-[#d4a843]"
+                  />
+                  <button type="submit" disabled={isChatting || !chatMessage.trim()} className="px-4 rounded-xl bg-[#d4a843] text-[#0a0a0c] text-xs font-semibold hover:bg-[#e2bb59] disabled:opacity-50 transition-colors">
+                    Send
+                  </button>
+                </form>
+              </motion.div>
+            )}
           </motion.div>
         )}
       </div>
