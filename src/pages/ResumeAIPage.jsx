@@ -21,11 +21,11 @@ import { apiPost, apiPostForm, api } from '../lib/apiClient';
 import SiteFooter from '../components/SiteFooter';
 
 const ANALYSIS_STEPS = [
-  { id: 'extract', label: 'Extracting resume text & metadata', detail: 'Running parser, stripping styling blocks, converting document layers...' },
-  { id: 'ats', label: 'Analyzing ATS compliance & keyword match', detail: 'Comparing resume terms against job description token matrices...' },
-  { id: 'redflags', label: 'Scanning for hiring manager red flags', detail: 'Evaluating formatting structure, layout flows, and duration gaps...' },
-  { id: 'rewrite', label: 'Applying Google XYZ formula to bullet points', detail: 'Re-engineering accomplishments: OUTCOME by ACTION using METHOD...' },
-  { id: 'review', label: 'Reviewing formatting and rendering PDF', detail: 'Finalizing typography spacing, grid alignments, and line-breaks...' },
+  { id: 'extract', label: 'Extracting text', detail: 'Running parser, stripping styling blocks, converting document layers...' },
+  { id: 'ats', label: 'Analyzing ATS', detail: 'Comparing resume terms against job description token matrices...' },
+  { id: 'redflags', label: 'Scanning flags', detail: 'Evaluating formatting structure, layout flows, and duration gaps...' },
+  { id: 'rewrite', label: 'XYZ Rewriting', detail: 'Re-engineering accomplishments: OUTCOME by ACTION using METHOD...' },
+  { id: 'review', label: 'Reviewing layout', detail: 'Finalizing typography spacing, grid alignments, and line-breaks...' },
 ];
 
 const TEMPLATES = [
@@ -177,17 +177,9 @@ export default function ResumeAIPage() {
   }, [isAnalyzing]);
 
   useEffect(() => {
-    if (isAnalyzing) {
-      setTimeout(() => {
-        loaderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
-    }
-  }, [isAnalyzing]);
-
-  useEffect(() => {
     if (result?.analysis && !isAnalyzing) {
       setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 100);
     }
   }, [result?.analysis, isAnalyzing]);
@@ -347,11 +339,11 @@ export default function ResumeAIPage() {
           </p>
         </motion.div>
 
-        {/* Two Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+        {/* Three Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch mb-10">
           
           {/* Resume Panel */}
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.09, ease: STD }} className="flex flex-col bg-[#131316] border border-[#232327] rounded-2xl overflow-hidden hover:border-[#2f2f34] transition-colors duration-300">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.09, ease: STD }} className="flex flex-col md:col-span-5 bg-[#131316] border border-[#232327] rounded-2xl overflow-hidden hover:border-[#2f2f34] transition-colors duration-300">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#232327]">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded border border-[#232327] flex items-center justify-center bg-[#0a0a0c]">
@@ -410,8 +402,75 @@ export default function ResumeAIPage() {
             </div>
           </motion.div>
 
+          {/* Middle Pipeline Column (Notion-style Action & Loader) */}
+          <div className="md:col-span-2 flex flex-col items-center justify-center gap-4 py-4 min-h-[232px]">
+            <motion.button
+              whileHover={canAnalyze ? { backgroundColor: '#e2bb59', boxShadow: '0 0 20px rgba(212,168,67,0.2)' } : {}}
+              whileTap={canAnalyze ? { scale: 0.965, transition: { ease: SPRING } } : {}}
+              onClick={handleAnalyze}
+              disabled={!canAnalyze}
+              className={`w-full max-w-[150px] py-3 rounded-full text-xs font-semibold flex items-center justify-center gap-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#d4a843] focus:ring-offset-2 focus:ring-offset-[#0a0a0c] ${
+                canAnalyze
+                  ? 'bg-[#d4a843] text-[#0a0a0c] cursor-pointer'
+                  : 'bg-[#17171b] text-[#55555d] cursor-not-allowed'
+              }`}
+            >
+              {isAnalyzing ? (
+                <RefreshCw size={12} className="animate-spin text-[#0a0a0c]" />
+              ) : (
+                'Analyze Match'
+              )}
+            </motion.button>
+
+            {/* Notion-style minimal steps */}
+            {isAnalyzing && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col gap-2 w-full bg-[#131316] border border-[#232327] rounded-xl p-3 text-[10px]"
+              >
+                {ANALYSIS_STEPS.map((step, idx) => {
+                  const isCompleted = idx < currentStepIndex;
+                  const isActive = idx === currentStepIndex;
+                  return (
+                    <div key={step.id} className="flex items-center gap-2 min-w-0">
+                      {isCompleted ? (
+                        <CheckCircle size={10} className="text-[#6ee7b7] shrink-0" />
+                      ) : isActive ? (
+                        <div className="w-2.5 h-2.5 rounded-full border border-[#d4a843] border-t-transparent animate-spin shrink-0" />
+                      ) : (
+                        <div className="w-2.5 h-2.5 rounded-full border border-[#2f2f34] shrink-0" />
+                      )}
+                      <span className={`truncate ${isActive ? 'text-[#f2f2f4] font-medium' : isCompleted ? 'text-[#93939c]' : 'text-[#55555d]'}`}>
+                        {step.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </motion.div>
+            )}
+
+            <div className="h-6 flex items-center justify-center">
+               <AnimatePresence mode="wait">
+                {analysisError && !isAnalyzing ? (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-1.5 text-xs text-[#ff5757]">
+                    <AlertTriangle size={12} />
+                    <span className="text-[10px] truncate max-w-[100px]">{analysisError}</span>
+                  </motion.div>
+                ) : result && !isAnalyzing ? (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-1.5 text-xs text-[#6ee7b7]">
+                    <CheckCircle size={12} />
+                    <span>Ready</span>
+                  </motion.div>
+                ) : (
+                  <p className="text-[10px] text-[#55555d] text-center">Cmd+Enter</p>
+                )}
+               </AnimatePresence>
+            </div>
+          </div>
+
           {/* JD Panel */}
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.18, ease: STD }} className="flex flex-col bg-[#131316] border border-[#232327] rounded-2xl overflow-hidden hover:border-[#2f2f34] transition-colors duration-300">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.18, ease: STD }} className="flex flex-col md:col-span-5 bg-[#131316] border border-[#232327] rounded-2xl overflow-hidden hover:border-[#2f2f34] transition-colors duration-300">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#232327]">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded border border-[#232327] flex items-center justify-center bg-[#0a0a0c]">
@@ -435,116 +494,9 @@ export default function ResumeAIPage() {
               />
             </div>
             
-            <div className="px-5 py-3 border-t border-[#232327] bg-[#0a0a0c]">
-              <p className="text-xs text-[#55555d]">{jobDescription.length} characters</p>
             </div>
           </motion.div>
         </div>
-
-        {/* Action Area */}
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.27, ease: STD }} className="flex flex-col items-center">
-          <motion.button
-            whileHover={canAnalyze ? { backgroundColor: '#e2bb59', boxShadow: '0 0 20px rgba(212,168,67,0.2)' } : {}}
-            whileTap={canAnalyze ? { scale: 0.965, transition: { ease: SPRING } } : {}}
-            onClick={handleAnalyze}
-            disabled={!canAnalyze}
-            className={`h-11 px-8 rounded-full text-sm font-medium flex items-center gap-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#d4a843] focus:ring-offset-2 focus:ring-offset-[#0a0a0c] ${
-              canAnalyze
-                ? 'bg-[#d4a843] text-[#0a0a0c] cursor-pointer'
-                : 'bg-[#17171b] text-[#55555d] cursor-not-allowed'
-            }`}
-          >
-            {isAnalyzing ? (
-              <RefreshCw size={16} className="animate-spin text-[#0a0a0c]" />
-            ) : (
-              'Analyze Match'
-            )}
-          </motion.button>
-          
-          <div className="mt-4 h-6 flex items-center justify-center">
-             <AnimatePresence mode="wait">
-              {analysisError && !isAnalyzing ? (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-xs text-[#ff5757]">
-                  <AlertTriangle size={12} />
-                  <span>{analysisError}</span>
-                </motion.div>
-              ) : result && !isAnalyzing ? (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-xs text-[#6ee7b7]">
-                  <CheckCircle size={12} />
-                  <span>Match report ready</span>
-                </motion.div>
-              ) : (
-                <p className="text-xs text-[#55555d]">Cmd/Ctrl + Enter to submit · Privacy preserved</p>
-              )}
-             </AnimatePresence>
-          </div>
-        </motion.div>
-
-        {/* Agent Loading Execution Flow */}
-        {isAnalyzing && (
-          <motion.div
-            ref={loaderRef}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mt-16 w-full max-w-[600px] mx-auto p-6 rounded-2xl border border-[#232327] bg-[#131316] shadow-xl relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(212,168,67,0.02)] to-transparent animate-pulse pointer-events-none" />
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#232327]">
-              <div className="w-8 h-8 rounded-full border border-[#d4a843] border-t-transparent animate-spin flex items-center justify-center">
-                <Sparkles size={14} className="text-[#d4a843]" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-[#f2f2f4]">Agent Execution Flow</h3>
-                <p className="text-xs text-[#55555d]">Executing background analysis steps...</p>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              {ANALYSIS_STEPS.map((step, idx) => {
-                const isCompleted = idx < currentStepIndex;
-                const isActive = idx === currentStepIndex;
-                const isPending = idx > currentStepIndex;
-
-                return (
-                  <motion.div
-                    key={step.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-start gap-3"
-                  >
-                    <div className="mt-1 flex items-center justify-center shrink-0">
-                      {isCompleted && (
-                        <CheckCircle size={16} className="text-[#6ee7b7]" />
-                      )}
-                      {isActive && (
-                        <div className="w-4 h-4 rounded-full border-2 border-[#d4a843] border-t-transparent animate-spin" />
-                      )}
-                      {isPending && (
-                        <div className="w-4 h-4 rounded-full border border-[#232327] bg-[#0a0a0c]" />
-                      )}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <span className={`text-sm font-medium ${isActive ? 'text-[#f2f2f4]' : isCompleted ? 'text-[#93939c]' : 'text-[#55555d]'}`}>
-                        {step.label}
-                      </span>
-                      {(isActive || isCompleted) && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          className="text-xs text-[#55555d] mt-1 font-mono leading-relaxed"
-                        >
-                          &gt; {step.detail}
-                        </motion.div>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
 
         {/* Results Area */}
         {result && analysis && (
