@@ -13,6 +13,7 @@ import {
   RefreshCw,
   Sparkles,
   FileBadge,
+  Trash2,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
