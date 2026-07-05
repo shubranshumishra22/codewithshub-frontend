@@ -144,6 +144,9 @@ export default function ResumeAIPage() {
   const [dragOver, setDragOver] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
+  
+  const resultsRef = useRef(null);
+  const loaderRef = useRef(null);
 
   const canAnalyze = resumeText && jobDescription.trim().length > 40 && !isAnalyzing;
 
@@ -172,6 +175,22 @@ export default function ResumeAIPage() {
     }, 2800);
     return () => clearInterval(interval);
   }, [isAnalyzing]);
+
+  useEffect(() => {
+    if (isAnalyzing) {
+      setTimeout(() => {
+        loaderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+  }, [isAnalyzing]);
+
+  useEffect(() => {
+    if (result?.analysis && !isAnalyzing) {
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [result?.analysis, isAnalyzing]);
 
   const handleUpload = async (file) => {
     if (!file) return;
@@ -464,6 +483,7 @@ export default function ResumeAIPage() {
         {/* Agent Loading Execution Flow */}
         {isAnalyzing && (
           <motion.div
+            ref={loaderRef}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -528,7 +548,7 @@ export default function ResumeAIPage() {
 
         {/* Results Area */}
         {result && analysis && (
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: STD }} className="mt-16 space-y-8 pt-10 border-t border-[rgba(212,168,67,0.35)]">
+          <motion.div ref={resultsRef} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: STD }} className="mt-16 space-y-8 pt-10 border-t border-[rgba(212,168,67,0.35)]">
             <div className="flex gap-1 p-1 rounded-xl bg-[#131316] border border-[#232327] w-fit mx-auto">
               {[{ id: 'dashboard', label: 'Dashboard' }, { id: 'diff', label: 'Resume Diff' }, { id: 'suggestions', label: 'Suggestions' }].map((tab) => (
                 <button
