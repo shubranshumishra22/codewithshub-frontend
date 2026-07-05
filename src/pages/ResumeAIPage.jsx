@@ -493,8 +493,6 @@ export default function ResumeAIPage() {
                 style={{ scrollbarWidth: 'thin', scrollbarColor: '#2f2f34 #0a0a0c' }}
               />
             </div>
-            
-            </div>
           </motion.div>
         </div>
 
