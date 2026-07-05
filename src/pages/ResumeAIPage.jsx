@@ -198,7 +198,7 @@ export default function ResumeAIPage() {
       setUploadedFile({ name: data.filename, size: (file.size / 1024 / 1024).toFixed(1) });
       setResumeText(data.resumeText);
     } catch (err) {
-      setUploadError(err.response?.data?.error || 'Upload failed.');
+      setUploadError(err.response?.data?.error || err.message || 'Upload failed.');
     } finally {
       setIsUploading(false);
     }
