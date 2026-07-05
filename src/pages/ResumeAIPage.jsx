@@ -20,15 +20,12 @@ import { supabase } from '../lib/supabaseClient';
 import { apiPost, apiPostForm, api } from '../lib/apiClient';
 import SiteFooter from '../components/SiteFooter';
 
-const LOADING_MESSAGES = [
-  'Analyzing ATS Score...',
-  'Finding Missing Keywords...',
-  'Optimizing Experience...',
-  'Thinking like a Recruiter...',
-  'Rewriting Bullet Points...',
-  'Checking ATS Compatibility...',
-  'Reviewing as Hiring Manager...',
-  'Generating Final Resume...',
+const ANALYSIS_STEPS = [
+  { id: 'extract', label: 'Extracting resume text & metadata', detail: 'Running parser, stripping styling blocks, converting document layers...' },
+  { id: 'ats', label: 'Analyzing ATS compliance & keyword match', detail: 'Comparing resume terms against job description token matrices...' },
+  { id: 'redflags', label: 'Scanning for hiring manager red flags', detail: 'Evaluating formatting structure, layout flows, and duration gaps...' },
+  { id: 'rewrite', label: 'Applying Google XYZ formula to bullet points', detail: 'Re-engineering accomplishments: OUTCOME by ACTION using METHOD...' },
+  { id: 'review', label: 'Reviewing formatting and rendering PDF', detail: 'Finalizing typography spacing, grid alignments, and line-breaks...' },
 ];
 
 const TEMPLATES = [
@@ -135,7 +132,7 @@ export default function ResumeAIPage() {
   const [uploadError, setUploadError] = useState(null);
   
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [result, setResult] = useState(null);
   
   const [dragOver, setDragOver] = useState(false);
@@ -155,10 +152,18 @@ export default function ResumeAIPage() {
   }, [canAnalyze, resumeText, jobDescription]);
 
   useEffect(() => {
-    if (!isAnalyzing) return;
+    if (!isAnalyzing) {
+      setCurrentStepIndex(0);
+      return;
+    }
     const interval = setInterval(() => {
-      setLoadingMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
-    }, 2000);
+      setCurrentStepIndex((prev) => {
+        if (prev < ANALYSIS_STEPS.length - 1) {
+          return prev + 1;
+        }
+        return prev;
+      });
+    }, 2800);
     return () => clearInterval(interval);
   }, [isAnalyzing]);
 
@@ -377,6 +382,71 @@ export default function ResumeAIPage() {
              </AnimatePresence>
           </div>
         </motion.div>
+
+        {/* Agent Loading Execution Flow */}
+        {isAnalyzing && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="mt-16 w-full max-w-[600px] mx-auto p-6 rounded-2xl border border-[#232327] bg-[#131316] shadow-xl relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(212,168,67,0.02)] to-transparent animate-pulse pointer-events-none" />
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#232327]">
+              <div className="w-8 h-8 rounded-full border border-[#d4a843] border-t-transparent animate-spin flex items-center justify-center">
+                <Sparkles size={14} className="text-[#d4a843]" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-[#f2f2f4]">Agent Execution Flow</h3>
+                <p className="text-xs text-[#55555d]">Executing background analysis steps...</p>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              {ANALYSIS_STEPS.map((step, idx) => {
+                const isCompleted = idx < currentStepIndex;
+                const isActive = idx === currentStepIndex;
+                const isPending = idx > currentStepIndex;
+
+                return (
+                  <motion.div
+                    key={step.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-start gap-3"
+                  >
+                    <div className="mt-1 flex items-center justify-center shrink-0">
+                      {isCompleted && (
+                        <CheckCircle size={16} className="text-[#6ee7b7]" />
+                      )}
+                      {isActive && (
+                        <div className="w-4 h-4 rounded-full border-2 border-[#d4a843] border-t-transparent animate-spin" />
+                      )}
+                      {isPending && (
+                        <div className="w-4 h-4 rounded-full border border-[#232327] bg-[#0a0a0c]" />
+                      )}
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <span className={`text-sm font-medium ${isActive ? 'text-[#f2f2f4]' : isCompleted ? 'text-[#93939c]' : 'text-[#55555d]'}`}>
+                        {step.label}
+                      </span>
+                      {(isActive || isCompleted) && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          className="text-xs text-[#55555d] mt-1 font-mono leading-relaxed"
+                        >
+                          &gt; {step.detail}
+                        </motion.div>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
 
         {/* Results Area */}
         {result && analysis && (
