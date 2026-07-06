@@ -41,6 +41,7 @@ const sheetIconMap = {
   'AI/ML': 'ti-cpu',
   'Neetcode 150': 'ti-layout-grid',
   'LeetCode Top Interview': 'ti-briefcase',
+  'Google': 'ti-brand-google',
 };
 
 const difficultyMeta = {
