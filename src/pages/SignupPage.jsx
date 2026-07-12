@@ -4,7 +4,6 @@ import { ShieldPlus, Sparkles, UserPlus, LogIn, Mail, Loader2 } from 'lucide-rea
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import SiteFooter from '../components/SiteFooter';
 
 const STD = [0.16, 1, 0.3, 1];
 const SPRING = [0.34, 1.56, 0.64, 1];
@@ -165,7 +164,6 @@ export default function SignupPage() {
           )}
         </motion.section>
       </main>
-      <SiteFooter />
     </div>
   );
 }

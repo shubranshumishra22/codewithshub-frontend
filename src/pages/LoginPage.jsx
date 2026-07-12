@@ -4,8 +4,6 @@ import { Gamepad2, LogIn, Sparkles, Mail, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import TerminalBlock from '../components/TerminalBlock';
-import SiteFooter from '../components/SiteFooter';
 
 const STD = [0.16, 1, 0.3, 1];
 const SPRING = [0.34, 1.56, 0.64, 1];
@@ -130,7 +128,6 @@ export default function LoginPage() {
           </div>
         </motion.section>
       </main>
-      <SiteFooter />
     </div>
   );
 }
