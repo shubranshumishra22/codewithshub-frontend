@@ -234,7 +234,7 @@ export default function RoadmapPage() {
   const [expandedStep, setExpandedStep] = useState(null);
 
   useEffect(() => {
-    document.title = 'Comprehensive Developer & DSA Preparation Roadmap | CodeWithShub';
+    document.title = 'CodeWithShub';
 
     let metaDescription = document.querySelector('meta[name="description"]');
     if (!metaDescription) {
