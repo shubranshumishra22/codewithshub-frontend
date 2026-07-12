@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Gamepad2, LogIn, Sparkles, Mail, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import TerminalBlock from '../components/TerminalBlock';
 import { useAuth } from '../context/AuthContext';
 
 const STD = [0.16, 1, 0.3, 1];
