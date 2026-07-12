@@ -28,6 +28,9 @@ export default function SiteFooter() {
               <Link to="/">DSA Sheets</Link>
             </li>
             <li>
+              <Link to="/roadmap/best-dsa-preparation-roadmap-for-beginners">Preparation Roadmap</Link>
+            </li>
+            <li>
               <Link to="/resume-ai">Resume Analyzer AI</Link>
             </li>
           </ul>

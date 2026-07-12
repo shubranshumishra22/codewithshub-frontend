@@ -60,15 +60,15 @@ export default function FloatingNavbar() {
         {/* Center Links */}
         <div className="flex items-center gap-2 justify-self-center">
           <Link
-            to="/"
+            to="/roadmap/best-dsa-preparation-roadmap-for-beginners"
             className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              location.pathname === '/' || location.pathname.startsWith('/sheet')
+              location.pathname.startsWith('/roadmap')
                 ? 'text-[#f2f2f4] bg-[#232327]/50'
                 : 'text-[#93939c] hover:text-[#f2f2f4] hover:bg-[#232327]/30'
             }`}
           >
-            <BookOpen size={15} />
-            <span>Sheets</span>
+            <Compass size={15} />
+            <span>Roadmap</span>
           </Link>
 
           {user && (
