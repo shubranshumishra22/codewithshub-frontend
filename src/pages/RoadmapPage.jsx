@@ -234,7 +234,7 @@ export default function RoadmapPage() {
   const [expandedStep, setExpandedStep] = useState(null);
 
   useEffect(() => {
-    document.title = 'CodeWithShub';
+    
 
     let metaDescription = document.querySelector('meta[name="description"]');
     if (!metaDescription) {
@@ -248,7 +248,7 @@ export default function RoadmapPage() {
     );
 
     return () => {
-      document.title = 'CodeWithShub';
+      
     };
   }, []);
 

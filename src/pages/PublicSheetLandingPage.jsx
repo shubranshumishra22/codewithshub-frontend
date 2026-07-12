@@ -40,7 +40,6 @@ export default function PublicSheetLandingPage() {
   // Dynamic SEO Configuration
   useEffect(() => {
     if (isAmazonArray) {
-      document.title = 'Top 50 Amazon Array Questions with Solutions | CodeWithShub';
       
       let meta = document.querySelector('meta[name="description"]');
       if (!meta) {
@@ -53,7 +52,6 @@ export default function PublicSheetLandingPage() {
         'Solve the top array coding interview questions asked in Amazon technical interviews. Access detailed solutions in C++, Java, Python, and JavaScript.'
       );
     } else {
-      document.title = 'Sliding Window Pattern Problems with Solutions | CodeWithShub';
       
       let meta = document.querySelector('meta[name="description"]');
       if (!meta) {
@@ -68,7 +66,7 @@ export default function PublicSheetLandingPage() {
     }
 
     return () => {
-      document.title = 'CodeWithShub';
+      
     };
   }, [isAmazonArray]);
 

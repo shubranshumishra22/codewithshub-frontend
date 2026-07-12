@@ -38,7 +38,6 @@ export default function QuestionDetailPage() {
   // Set SEO tags dynamically
   useEffect(() => {
     if (question) {
-      document.title = `${question.title} Solution | C++, Java, Python, JS | CodeWithShub`;
       
       // Update meta description
       let metaDescription = document.querySelector('meta[name="description"]');
@@ -53,7 +52,7 @@ export default function QuestionDetailPage() {
       );
     }
     return () => {
-      document.title = 'CodeWithShub';
+      
     };
   }, [question]);
 
