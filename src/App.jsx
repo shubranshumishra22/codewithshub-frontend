@@ -21,6 +21,15 @@ export default function App() {
           <Route
             path="/"
             element={
+              <>
+                <FloatingNavbar />
+                <RoadmapPage />
+              </>
+            }
+          />
+          <Route
+            path="/sheets"
+            element={
               <ProtectedRoute>
                 <FloatingNavbar />
                 <SheetPage />
