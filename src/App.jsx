@@ -10,7 +10,6 @@ import SignupPage from './pages/SignupPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import QuestionDetailPage from './pages/QuestionDetailPage';
 import ResumeAIPage from './pages/ResumeAIPage';
-import RoadmapPage from './pages/RoadmapPage';
 import PublicSheetLandingPage from './pages/PublicSheetLandingPage';
 
 export default function App() {
@@ -63,15 +62,7 @@ export default function App() {
               </>
             }
           />
-          <Route
-            path="/roadmap/best-dsa-preparation-roadmap-for-beginners"
-            element={
-              <>
-                <FloatingNavbar />
-                <RoadmapPage />
-              </>
-            }
-          />
+
           <Route
             path="/sheets/top-50-array-questions-asked-in-amazon-interviews"
             element={

@@ -53,22 +53,22 @@ export default function FloatingNavbar() {
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 min-h-[36px]">
         
         {/* Brand */}
-        <Link to="/" className="flex items-center gap-2 text-[#f2f2f4] text-[15px] font-semibold justify-self-start group transition-colors" aria-label="Sheets Home">
-          <span className="group-hover:text-[#c084fc] transition-colors">Sheets</span>
+        <Link to="/" className="flex items-center gap-2 text-[#f2f2f4] text-[15px] font-semibold justify-self-start group transition-colors" aria-label="CodeWithShub Home">
+          <span className="group-hover:text-[#c084fc] transition-colors">CodeWithShub</span>
         </Link>
 
         {/* Center Links */}
         <div className="flex items-center gap-2 justify-self-center">
           <Link
-            to="/roadmap/best-dsa-preparation-roadmap-for-beginners"
+            to="/"
             className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              location.pathname.startsWith('/roadmap')
+              location.pathname === '/' || location.pathname.startsWith('/sheet')
                 ? 'text-[#f2f2f4] bg-[#232327]/50'
                 : 'text-[#93939c] hover:text-[#f2f2f4] hover:bg-[#232327]/30'
             }`}
           >
-            <Compass size={15} />
-            <span>Roadmap</span>
+            <BookOpen size={15} />
+            <span>Sheets</span>
           </Link>
 
           {user && (
