@@ -68,28 +68,28 @@ export default function PublicSheetLandingPage() {
     }
 
     return () => {
-      document.title = 'DSA Quest';
+      document.title = 'CodeWithShub';
     };
   }, [isAmazonArray]);
 
-  // Fetch all questions from the Striver sheet dynamically
+  // Fetch all questions from the Quest Sheet dynamically
   const questionsQuery = useQuery({
     queryKey: ['public-landing-questions'],
     queryFn: async () => {
       const response = await apiGet('/sheets');
       const sheets = response.data.sheets || [];
-      const striver = sheets.find((s) => s.name === 'Striver A-Z') || sheets[0];
-      if (!striver) return [];
+      const questSheet = sheets.find((s) => s.name === 'Quest Sheet') || sheets[0];
+      if (!questSheet) return [];
 
-      const topicsResponse = await apiGet(`/sheets/${striver.id}/topics`);
+      const topicsResponse = await apiGet(`/sheets/${questSheet.id}/topics`);
       const topics = topicsResponse.data.topics || [];
       return {
-        sheetId: striver.id,
+        sheetId: questSheet.id,
         questions: topics.flatMap((t) =>
           t.questions.map((q) => ({
             ...q,
             topicName: t.name,
-            sheetId: striver.id,
+            sheetId: questSheet.id,
           }))
         ),
       };

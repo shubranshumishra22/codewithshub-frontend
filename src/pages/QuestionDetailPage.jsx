@@ -53,7 +53,7 @@ export default function QuestionDetailPage() {
       );
     }
     return () => {
-      document.title = 'DSA Quest';
+      document.title = 'CodeWithShub';
     };
   }, [question]);
 

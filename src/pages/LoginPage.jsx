@@ -54,9 +54,9 @@ export default function LoginPage() {
           </div>
 
           <header className="mb-8">
-            <p className="text-[#d4a843] text-xs font-medium tracking-wide uppercase mb-2">Level up your DSA journey</p>
+            <p className="text-[#c084fc] text-xs font-medium tracking-wide uppercase mb-2">Level up your DSA journey</p>
             <h1 className="text-3xl font-semibold tracking-tight text-[#f2f2f4] mb-2">
-              DSA QUEST
+              CodeWithShub
             </h1>
             <p className="text-[#93939c] text-sm">
               Enter the arena and continue your coding streak.

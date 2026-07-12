@@ -90,12 +90,12 @@ export default function SignupPage() {
               </div>
 
               <header className="mb-8">
-                <p className="text-[#d4a843] text-xs font-medium tracking-wide uppercase mb-2">Join the leaderboard</p>
+                <p className="text-[#c084fc] text-xs font-medium tracking-wide uppercase mb-2">Join the leaderboard</p>
                 <h1 className="text-3xl font-semibold tracking-tight text-[#f2f2f4] mb-2">
-                  DSA QUEST
+                  CodeWithShub
                 </h1>
                 <p className="text-[#93939c] text-sm">
-                  Register your account and start your quest through the Striver A-Z path.
+                  Register your account and start your quest through the curated DSA paths.
                 </p>
               </header>
 

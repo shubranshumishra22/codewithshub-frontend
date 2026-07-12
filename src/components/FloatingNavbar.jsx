@@ -53,9 +53,8 @@ export default function FloatingNavbar() {
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 min-h-[36px]">
         
         {/* Brand */}
-        <Link to="/" className="flex items-center gap-2 text-[#f2f2f4] text-[15px] font-semibold justify-self-start group hover:text-[#d4a843] transition-colors" aria-label="Sheets Home">
-          <BookOpen size={18} className="text-[#93939c] group-hover:text-[#d4a843] transition-colors" />
-          <span>Sheets</span>
+        <Link to="/" className="flex items-center gap-2 text-[#f2f2f4] text-[15px] font-semibold justify-self-start group transition-colors" aria-label="Sheets Home">
+          <span className="group-hover:text-[#c084fc] transition-colors">Sheets</span>
         </Link>
 
         {/* Center Links */}

@@ -9,6 +9,7 @@ import {
   X,
   Brain,
   Play,
+  LibraryBig,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient';
@@ -31,16 +32,17 @@ const slugify = (text) => {
 };
 
 
-const STRIVER_SHEET_NAME = 'Striver A-Z';
+const STRIVER_SHEET_NAME = 'Quest Sheet';
 const REVISION_DAYS = [1, 3, 7, 15, 30, 60, 120];
 
 const sheetIconMap = {
-  'Striver A-Z': 'ti-list-check',
-  'Striver A–Z': 'ti-list-check',
+  'Quest Sheet': 'ti-brain',
   'Rising Brain Sheet': 'ti-brain',
   'AI/ML': 'ti-cpu',
   'Neetcode 150': 'ti-layout-grid',
+  'Interview Questions': 'ti-briefcase',
   'LeetCode Top Interview': 'ti-briefcase',
+  'Google Sheet': 'ti-brand-google',
   'Google': 'ti-brand-google',
 };
 
@@ -409,6 +411,7 @@ export default function SheetPage() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['sheet-progress', sheetId, user?.id] });
       queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['all-sheets-progress-summary', user?.id] });
     },
   });
 
@@ -463,6 +466,7 @@ export default function SheetPage() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['sheet-progress', sheetId, user?.id] });
       queryClient.invalidateQueries({ queryKey: ['sheet-revisions', sheetId, user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['all-sheets-progress-summary', user?.id] });
     },
   });
 
@@ -726,6 +730,7 @@ export default function SheetPage() {
     };
   }, [progressByQuestion, topicsQuery.data]);
 
+
   const openNotes = (question) => {
     setNotesQuestion(question);
     setNotesDraft(question.notes || '');
@@ -937,27 +942,73 @@ export default function SheetPage() {
   };
 
   return (
-    <main className="dashboard-shell">
+    <main className="dashboard-shell" style={{ position: 'relative' }}>
+      {/* Ambient background glows */}
+      <div className="sheet-bg-glow-1" />
+      <div className="sheet-bg-glow-2" />
+
       <div className="dashboard-container">
         {/* ── Hero ── */}
-        <div className="dh-hero">
-          <h1 className="dh-title">{activeSheetName}</h1>
-          <p className="dh-subtitle">
-            {isConceptual
-              ? "Master machine learning, deep learning, NLP, and agentic AI one concept at a time."
-              : "Master data structures and algorithms one pattern at a time."}
-          </p>
-          <div className="dh-meta">
-            <span className="dh-count">
-              {stats.solvedCount} {isConceptual ? 'completed' : 'solved'}
-            </span>
-            <span className="dh-divider">·</span>
-            <span className="dh-count">
-              {stats.totalCount} {isConceptual ? 'total lessons' : 'total problems'}
-            </span>
+        <div className="dh-hero-new">
+          <div className="dh-hero-left">
+            <h1 className="dh-title">{activeSheetName}</h1>
+            {activeSheetName === 'Quest Sheet' && (
+              <p className="dh-curation-credit">Curated by Rising Brain</p>
+            )}
+            <p className="dh-subtitle">
+              {isConceptual
+                ? "Master machine learning, deep learning, NLP, and agentic AI one concept at a time."
+                : "Master data structures and algorithms one pattern at a time."}
+            </p>
           </div>
-          <div className="dh-track">
-            <div className="dh-track-fill" style={{ width: `${stats.totalCount > 0 ? (stats.solvedCount / stats.totalCount) * 100 : 0}%` }} />
+          
+          <div className="dh-hero-right">
+            {/* Card 1: Circular Progress */}
+            <div className="dh-hero-card circular-card">
+              <div className="dh-circle-wrap">
+                <svg className="dh-circle-svg" width="90" height="90">
+                  <defs>
+                    <linearGradient id="dh-circle-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#3b82f6" />
+                      <stop offset="100%" stopColor="#8b5cf6" />
+                    </linearGradient>
+                  </defs>
+                  <circle
+                    className="dh-circle-track"
+                    cx="45"
+                    cy="45"
+                    r="34"
+                    strokeWidth="5.5"
+                  />
+                  <circle
+                    className="dh-circle-fill"
+                    cx="45"
+                    cy="45"
+                    r="34"
+                    strokeWidth="5.5"
+                    stroke="url(#dh-circle-grad)"
+                    strokeDasharray={2 * Math.PI * 34}
+                    strokeDashoffset={2 * Math.PI * 34 - (stats.totalCount > 0 ? (stats.solvedCount / stats.totalCount) : 0) * 2 * Math.PI * 34}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="dh-circle-text">
+                  <span className="percent-num">{stats.totalCount > 0 ? Math.round((stats.solvedCount / stats.totalCount) * 100) : 0}%</span>
+                  <span className="percent-lbl">CLEARED</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: Solved / Total */}
+            <div className="dh-hero-card fraction-card">
+              <div className="fraction-icon-wrap">
+                <LibraryBig size={20} className="fraction-icon" />
+              </div>
+              <div className="fraction-info-wrap">
+                <span className="fraction-lbl">SOLVED / TOTAL</span>
+                <span className="fraction-val">{stats.solvedCount}/{stats.totalCount}</span>
+              </div>
+            </div>
           </div>
         </div>
 

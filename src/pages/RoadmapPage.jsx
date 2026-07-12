@@ -1,35 +1,241 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Compass, Layers, ShieldAlert, Sparkles, Terminal } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Code2,
+  Briefcase,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle2,
+  Sparkles,
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SiteFooter from '../components/SiteFooter';
 
-const roadmapSteps = [
-  { level: 1, name: 'Learn the Basics', topics: 'Patterns, Recursion, Hashing theory', desc: 'Get comfortable with syntax, loops, conditional flows, basic mathematics, and hashing concepts.' },
-  { level: 2, name: 'Sorting Techniques', topics: 'Selection, Bubble, Insertion, Merge, Quick Sort', desc: 'Understand comparison sorts, divide & conquer, and sorting efficiency (time & space complex).' },
-  { level: 3, name: 'Arrays (Easy, Medium, Hard)', topics: '2Sum, Kadane\'s, Stock Buy/Sell, Next Permutation', desc: 'Master array manipulations, sliding window basics, prefix sums, and two-pointer strategies.' },
-  { level: 4, name: 'Binary Search', topics: 'Search space, Rotated sorted arrays, Book allocation', desc: 'Learn searching bounds, logarithmic search algorithms, and applying binary search on answers.' },
-  { level: 5, name: 'Strings', topics: 'Anagrams, Isomorphic, Longest palindromic substring', desc: 'Manipulate strings, search sub-patterns, and utilize ASCII mapping tables.' },
-  { level: 6, name: 'Linked Lists', topics: 'Singly LL, Doubly LL, Cycle detection, Flattening', desc: 'Understand node pointers, dummy nodes, list reversals, and slow/fast pointer hacks.' },
-  { level: 7, name: 'Recursion & Backtracking', topics: 'Subsets, Combination Sum, N-Queens, Sudoku', desc: 'Build recursive search trees, try all options, and prune invalid recursive states (backtrack).' },
-  { level: 8, name: 'Bit Manipulation', topics: 'XOR logic, Power of 2, Count set bits', desc: 'Perform bitwise logical operations, mask indices, and optimize bit patterns.' },
-  { level: 9, name: 'Stack & Queues', topics: 'Monotonic stack, Min Stack, LRU Cache, Sliding Window Max', desc: 'Use FIFO/LIFO structures to solve linear tracking problems and design caching indexes.' },
-  { level: 10, name: 'Sliding Window & Two Pointers', topics: 'Distinct substrings, window limits', desc: 'Manage contiguous subsegments using variable size windows and pointer boundaries.' },
-  { level: 11, name: 'Heaps / Priority Queues', topics: 'K-sorted, Median in stream, Task scheduler', desc: 'Fetch dynamic min/max elements in logarithmic time. Master heapifications.' },
-  { level: 12, name: 'Greedy Algorithms', topics: 'Fractional Knapsack, Platforms, Cookies', desc: 'Solve scheduling and optimization problems by picking the locally optimal choice at each step.' },
-  { level: 13, name: 'Binary Trees', topics: 'Traversals, Depth, Views, Diameter, LCA', desc: 'Understand hierarchical graphs, height calculations, and tree traversal orderings.' },
-  { level: 14, name: 'Binary Search Trees', topics: 'BST insertion, validation, Inorder Successor', desc: 'Maintain elements in sorted tree orders. Perform search, inserts, and deletes.' },
-  { level: 15, name: 'Graphs', topics: 'BFS/DFS, Dijkstra, MST, Topological Sort, Bridges', desc: 'Represent connectivity networks. Find shortest paths, minimum spans, and cut nodes.' },
-  { level: 16, name: 'Dynamic Programming', topics: 'Grids, Knapsack, LIS, Stock DP, Matrix Chain', desc: 'Optimize recursion by caching sub-results (Memoization/Tabulation). Solve state problems.' },
-  { level: 17, name: 'Tries', topics: 'Implement Trie, Prefix queries, Max XOR match', desc: 'Design spelling search trees and fast prefix match index pools.' }
+const dsaMasteryPath = [
+  {
+    level: 1,
+    name: 'Learn the Basics',
+    topics: 'Patterns, Recursion, Hashing theory',
+    desc: 'Get comfortable with basic syntax, loops, mathematical operations, and core hashing theory.',
+    subtopics: [
+      'Syntax & Standard Libraries',
+      'Basic Recursion Mechanics',
+      'Time Complexity Calculations',
+      'Hashing Maps Introduction',
+    ],
+    tips: 'Practice tracing recursive loops manually on paper to build core execution visualization skills.',
+  },
+  {
+    level: 2,
+    name: 'Sorting Techniques',
+    topics: 'Selection, Bubble, Insertion, Merge, Quick Sort',
+    desc: 'Understand comparison sorting and the divide-and-conquer strategy.',
+    subtopics: [
+      'O(N^2) Comparison Sorts',
+      'Merge Sort (Divide & Conquer)',
+      'Quick Sort (In-place Pivot)',
+      'Sorting Time & Space Bounds',
+    ],
+    tips: 'Understand why Merge Sort takes O(N) auxiliary space while Quick Sort takes O(log N) recursion stack space.',
+  },
+  {
+    level: 3,
+    name: 'Arrays & Hashing',
+    topics: '2Sum, Kadane\'s, Stock Buy/Sell, Next Permutation',
+    desc: 'Master basic array traversals, two-pointers, and sliding window boundaries.',
+    subtopics: [
+      'Two-Pointer Scans',
+      'Prefix & Suffix Accumulators',
+      'Sliding Window Basics',
+      'Kadane\'s Subarray Algorithm',
+    ],
+    tips: 'Kadane\'s algorithm is foundational. Always look for local maximums that build up to a global peak.',
+  },
+  {
+    level: 4,
+    name: 'Binary Search',
+    topics: 'Search bounds, Rotated sorted arrays, Book allocation',
+    desc: 'Apply divide-and-conquer boundaries to logarithmic search spaces.',
+    subtopics: [
+      'Monotonic Search Spaces',
+      'BS on Rotated Sorted Arrays',
+      'Search on Answer Space',
+      'Allocation & Range Bounds',
+    ],
+    tips: 'Binary search applies to any monotonic function, not just sorted arrays. Try to frame search conditions clearly.',
+  },
+  {
+    level: 5,
+    name: 'Linked Lists',
+    topics: 'Singly LL, Doubly LL, Cycle detection, Flattening',
+    desc: 'Manipulate nodes, pointers, list reversals, and slow/fast pointer tricks.',
+    subtopics: [
+      'Pointer Redirection Rules',
+      'Slow & Fast Pointer Strategy',
+      'Cycle Detection (Floyd\'s)',
+      'Recursive Node Flattening',
+    ],
+    tips: 'Draw list nodes on paper before writing pointer logic. A single dangling node will cause infinite loops!',
+  },
+  {
+    level: 6,
+    name: 'Recursion & Backtracking',
+    topics: 'Subsets, Combination Sum, N-Queens, Sudoku',
+    desc: 'Explore combinatorial search spaces and prune branches that violate constraints.',
+    subtopics: [
+      'State Space Trees',
+      'Subset Generation Patterns',
+      'Backtracking State Reversals',
+      'Recursive Tree Pruning',
+    ],
+    tips: 'Backtracking is simply Depth First Search on a decision tree. Remember to revert state after returning.',
+  },
+  {
+    level: 7,
+    name: 'Stacks & Queues',
+    topics: 'Monotonic stack, Min Stack, LRU Cache, Sliding Window Max',
+    desc: 'Learn FIFO/LIFO behaviors and optimize linear tracking boundaries.',
+    subtopics: [
+      'LIFO/FIFO Core Mechanics',
+      'Monotonic Stack Optimizations',
+      'LRU Cache Index Design',
+      'Sliding Window Extremums',
+    ],
+    tips: 'Monotonic stacks are excellent for finding the "next greater" or "previous smaller" boundaries in O(N) time.',
+  },
+  {
+    level: 8,
+    name: 'Hierarchical Trees',
+    topics: 'Traversals, Depth, Views, Diameter, LCA, BST rules',
+    desc: 'Master hierarchical node relationships, tree height, and search tree constraints.',
+    subtopics: [
+      'Inorder, Preorder, Postorder Traversals',
+      'Level Order BFS traversals',
+      'Lowest Common Ancestor (LCA)',
+      'Binary Search Tree Properties',
+    ],
+    tips: 'Understand the difference between height (longest path to leaf) and depth (edges to root). Recursive tree sweeps are core.',
+  },
+  {
+    level: 9,
+    name: 'Graphs & Connectivity',
+    topics: 'BFS/DFS, Dijkstra, MST, Topological Sort, Bridges',
+    desc: 'Represent connection networks, traverse graphs, and calculate shortest paths.',
+    subtopics: [
+      'Adjacency List traversals',
+      'Topological Sort & Dependency Cycles',
+      'Dijkstra\'s Shortest Path',
+      'Minimum Spanning Trees',
+    ],
+    tips: 'Dijkstra\'s algorithm requires non-negative edges. BFS is always the optimal choice for unweighted shortest paths.',
+  },
+  {
+    level: 10,
+    name: 'Dynamic Programming',
+    topics: 'Grid Paths, Knapsack, LIS, Stock DP, Matrix Chain',
+    desc: 'Cache subproblem results to solve complex optimization problems.',
+    subtopics: [
+      'Overlapping Subproblems',
+      'Memoization (Top-down caching)',
+      'Tabulation (Bottom-up grids)',
+      'DP State Space Reduction',
+    ],
+    tips: 'Identify the state parameters, write a recurrence relation, and cache it. Solve recursive recursion first.',
+  },
+];
+
+const careerPrepPath = [
+  {
+    level: 1,
+    name: 'Choose Language & Version Control',
+    topics: 'C++ / Java / Python / JS, Git workflow, terminal',
+    desc: 'Select a primary language, master the terminal command line, and use standard version control systems.',
+    subtopics: [
+      'Language Specific Core Syntax',
+      'Terminal Shell Basics',
+      'Git Initialization & Commits',
+      'GitHub Repository Management',
+    ],
+    tips: 'Choose one primary language and stick to it. Focus on coding logic rather than switching syntaxes.',
+  },
+  {
+    level: 2,
+    name: 'Full-Stack Project Development',
+    topics: 'DB Schema, REST APIs, state sync, security checks',
+    desc: 'Build functional applications to showcase software design, schema integrations, and REST API controllers.',
+    subtopics: [
+      'Database Schema Relationships',
+      'Backend Route Controllers',
+      'CORS & Security Validations',
+      'State-driven User Interfaces',
+    ],
+    tips: 'Build a single high-quality project with clean architecture rather than five generic project clones.',
+  },
+  {
+    level: 3,
+    name: 'Resume Building & AI Analysis',
+    topics: 'ATS optimizations, metrics, AI review panel',
+    desc: 'Structure a professional developer resume and scan it using our AI review analyzer to bypass ATS filters.',
+    subtopics: [
+      'ATS-Compliant Structure',
+      'Quantifiable Impact Metrics',
+      'Action Verb Formats',
+      'AI Analysis Feedback',
+    ],
+    tips: 'Review your CV with our integrated AI Resume Reviewer to check metrics, verbs, and optimization warnings.',
+    link: '/resume-ai',
+    linkLabel: 'Launch AI Resume Reviewer ➜',
+  },
+  {
+    level: 4,
+    name: 'Spaced Repetitions & Logic Checks',
+    topics: 'Active Recall, Logic Validator execution, edge cases',
+    desc: 'Review weak algorithm sheets and execute logical mock tests using automated logic validators.',
+    subtopics: [
+      'Spaced Revision Scheduling',
+      'Handling Edge Case Constraints',
+      'Logic Validation Mock Steps',
+      'Code Refactoring & Cleanup',
+    ],
+    tips: 'Use our spaced-repetition scheduler. Verify that your solutions handle empty inputs, null pointers, and integer overflows.',
+  },
+  {
+    level: 5,
+    name: 'System Design Fundamentals',
+    topics: 'Load balancers, sharding, caching tiers, microservices',
+    desc: 'Understand distributed architectures, horizontal scaling, database setups, and caching strategies.',
+    subtopics: [
+      'Load Balancers & Reverse Proxies',
+      'Caching Tiers (Redis/Memcached)',
+      'Database Sharding & Replication',
+      'Message Queues (Kafka/RabbitMQ)',
+    ],
+    tips: 'Study tech blogs (Netflix, Discord, bytebytego) to see how modern web companies solve massive traffic scaling.',
+  },
+  {
+    level: 6,
+    name: 'Technical & Behavioral Mock Interviews',
+    topics: 'STAR method, Big O out-loud, whiteboard code sweeps',
+    desc: 'Practice explaining algorithms out loud, dry-running test matrices, and describing projects with the STAR framework.',
+    subtopics: [
+      'STAR Interview Answers (Situation, Task, Action, Result)',
+      'Explaining Complexities Verbally',
+      'Interactive Whiteboard Flows',
+      'Salary & Offer Negotiations',
+    ],
+    tips: 'Always describe test cases and dry-run code out loud to your interviewer before typing out final solutions.',
+  },
 ];
 
 export default function RoadmapPage() {
   const { user } = useAuth();
+  const [activeTrack, setActiveTrack] = useState('dsa'); // 'dsa' | 'career'
+  const [expandedStep, setExpandedStep] = useState(null);
 
   useEffect(() => {
-    document.title = 'Best DSA Preparation Roadmap for Beginners | CodeWithShub';
-    
+    document.title = 'Comprehensive Developer & DSA Preparation Roadmap | CodeWithShub';
+
     let metaDescription = document.querySelector('meta[name="description"]');
     if (!metaDescription) {
       metaDescription = document.createElement('meta');
@@ -38,145 +244,161 @@ export default function RoadmapPage() {
     }
     metaDescription.setAttribute(
       'content',
-      'The ultimate, step-by-step DSA preparation roadmap for beginners. Learn how to start learning DSA from scratch, track your progress, and prepare for top coding interviews.'
+      'Access the ultimate, step-by-step developer preparation roadmap. Learn programming foundations, master curated DSA sheets, build projects, tailor your resume with AI, and prep for system design.'
     );
 
     return () => {
-      document.title = 'DSA Quest';
+      document.title = 'CodeWithShub';
     };
   }, []);
 
+  const currentSteps = activeTrack === 'dsa' ? dsaMasteryPath : careerPrepPath;
+
   return (
-    <main className="sheet-shell" style={{ paddingTop: '100px' }}>
-      <div className="sheet-card auth-entrance" style={{ maxWidth: '1000px' }}>
-        
-        {/* Header Block */}
-        <div className="sheet-header" style={{ flexDirection: 'column', gap: '8px', marginBottom: '40px', textAlign: 'center', alignItems: 'center' }}>
-          <h1 style={{ marginTop: '16px', color: '#fff', fontSize: 'clamp(2rem, 6vw, 3rem)' }}>
-            Best DSA Preparation Roadmap
-          </h1>
-          <p className="sheet-subtitle" style={{ maxWidth: '640px', margin: '0 auto', fontSize: '1rem', lineHeight: '1.6' }}>
-            A comprehensive, step-by-step guide designed to take you from programming basics to advanced technical algorithms.
+    <main className="roadmap-shell">
+      {/* Background glowing gradients */}
+      <div className="roadmap-bg-glow-1" />
+      <div className="roadmap-bg-glow-2" />
+
+      <div className="roadmap-container auth-entrance">
+        {/* Header Block Centered */}
+        <div className="roadmap-header">
+          <h1>Developer Career Roadmap</h1>
+          <p>
+            An interactive, step-by-step curriculum guiding you from algorithmic problem-solving to system design and landing high-end tech roles.
           </p>
         </div>
 
-        {/* Strategy Guide Cards */}
-        <section style={{ marginBottom: '48px' }}>
-          <h2 style={{ fontSize: '1.5rem', color: '#fff', marginBottom: '24px', borderBottom: '0.5px solid #242629', paddingBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Sparkles size={20} style={{ color: '#39d353' }} />
-            How to Learn DSA from Scratch
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
-            <article className="topic-card" style={{ padding: '20px' }}>
-              <strong style={{ color: '#fff', fontSize: '1rem', display: 'block', marginBottom: '8px' }}>
-                1. Stick to One Language
-              </strong>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', lineHeight: '1.6', margin: 0 }}>
-                Choose C++, Java, Python, or JavaScript. Focus on algorithm logic instead of syntax switching.
-              </p>
-            </article>
-
-            <article className="topic-card" style={{ padding: '20px' }}>
-              <strong style={{ color: '#fff', fontSize: '1rem', display: 'block', marginBottom: '8px' }}>
-                2. Solve Topic-Wise
-              </strong>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', lineHeight: '1.6', margin: 0 }}>
-                Master one level before advancing. Do not jump to Trees or Graphs before understanding Recursion and Arrays.
-              </p>
-            </article>
-
-            <article className="topic-card" style={{ padding: '20px' }}>
-              <strong style={{ color: '#fff', fontSize: '1rem', display: 'block', marginBottom: '8px' }}>
-                3. Space Out Revisions
-              </strong>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', lineHeight: '1.6', margin: 0 }}>
-                Re-solve problems after 1, 3, and 7 days. Our spaced-repetition scheduler generates these slots automatically.
-              </p>
-            </article>
-
-            <article className="topic-card" style={{ padding: '20px' }}>
-              <strong style={{ color: '#fff', fontSize: '1rem', display: 'block', marginBottom: '8px' }}>
-                4. Focus on Complexities
-              </strong>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', lineHeight: '1.6', margin: 0 }}>
-                Never just write code. Explain the Time Complexity (Big O) and Space Complexity for every single algorithm.
-              </p>
-            </article>
+        {/* Track Switcher */}
+        <div className="roadmap-track-switcher-wrap">
+          <div className="roadmap-track-switcher">
+            <button
+              className={`track-tab ${activeTrack === 'dsa' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTrack('dsa');
+                setExpandedStep(null);
+              }}
+            >
+              <Code2 size={16} />
+              <span>DSA Mastery Path</span>
+            </button>
+            <button
+              className={`track-tab ${activeTrack === 'career' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTrack('career');
+                setExpandedStep(null);
+              }}
+            >
+              <Briefcase size={16} />
+              <span>Career & Interview Path</span>
+            </button>
           </div>
-        </section>
+        </div>
 
-        {/* Visual Roadmap Timeline */}
-        <section style={{ marginBottom: '40px' }}>
-          <h2 style={{ fontSize: '1.5rem', color: '#fff', marginBottom: '32px', borderBottom: '0.5px solid #242629', paddingBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Layers size={20} style={{ color: '#8a6a2a' }} />
-            Step-by-Step Level Map
-          </h2>
+        {/* Core Timeline section */}
+        <section className="roadmap-timeline-section">
+          <div className="roadmap-timeline-line" />
 
-          <div style={{ position: 'relative', paddingLeft: '24px', borderLeft: '1.5px solid #242629', marginLeft: '12px', display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            {roadmapSteps.map((step) => (
-              <div key={step.level} style={{ position: 'relative' }}>
-                {/* Timeline Orb */}
-                <div style={{
-                  position: 'absolute',
-                  left: '-33px',
-                  top: '4px',
-                  width: '16px',
-                  height: '16px',
-                  borderRadius: '50%',
-                  background: '#111214',
-                  border: '2px solid #39d353',
-                  boxShadow: '0 0 8px rgba(57, 211, 83, 0.4)',
-                  zIndex: 2
-                }} />
+          <div className="roadmap-timeline-steps">
+            {currentSteps.map((step, index) => {
+              const isExpanded = expandedStep === index;
 
-                {/* Level Card */}
-                <div className="topic-card" style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-                  <div style={{ flex: '1 1 400px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-                      <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: '#39d353', background: 'rgba(57, 211, 83, 0.1)', padding: '2px 8px', borderRadius: '4px' }}>
-                        LEVEL {step.level}
-                      </span>
-                      <strong style={{ fontSize: '1.15rem', color: '#fff' }}>
-                        {step.name}
-                      </strong>
-                    </div>
-                    <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', margin: '4px 0 8px' }}>
-                      {step.desc}
-                    </p>
-                    <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', display: 'block', fontFamily: 'monospace' }}>
-                      Key Focus: {step.topics}
-                    </span>
+              // Select color nodes based on activeTrack and levels
+              let nodeClass = 'node-indigo';
+              if (activeTrack === 'dsa') {
+                if (step.level > 7) nodeClass = 'node-violet';
+                else if (step.level > 3) nodeClass = 'node-purple';
+              } else {
+                if (step.level > 4) nodeClass = 'node-emerald';
+                else if (step.level > 2) nodeClass = 'node-purple';
+              }
+
+              return (
+                <div key={step.level} className="roadmap-step-item">
+                  {/* Timeline Node Ring */}
+                  <div className={`roadmap-timeline-node ${nodeClass}`}>
+                    <span className="node-number">{step.level}</span>
                   </div>
 
-                  <div>
-                    {user ? (
-                      <Link
-                        to="/"
-                        className="auth-button"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', padding: '8px 14px' }}
-                      >
-                        Open Sheet
-                        <ArrowRight size={14} />
-                      </Link>
-                    ) : (
-                      <Link
-                        to="/login"
-                        className="sheet-progress-link"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', padding: '8px 14px' }}
-                      >
-                        Track Level
-                        <ArrowRight size={14} />
-                      </Link>
-                    )}
+                  {/* Level Card */}
+                  <div
+                    className={`roadmap-step-card ${isExpanded ? 'is-expanded-card' : ''}`}
+                    onClick={() => setExpandedStep(isExpanded ? null : index)}
+                  >
+                    <div className="step-card-main">
+                      <div className="step-card-content">
+                        <div className="step-badge-row">
+                          <span className="step-level-tag">Stage {step.level}</span>
+                          <span className="step-topics-preview">{step.topics}</span>
+                        </div>
+                        <h4>{step.name}</h4>
+                        <p className="step-description">{step.desc}</p>
+                      </div>
+
+                      <div className="step-card-arrow">
+                        {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                      </div>
+                    </div>
+
+                    {/* Expandable Accordion */}
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div
+                          className="step-card-accordion"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25 }}
+                          onClick={(e) => e.stopPropagation()} // Prevent card collapse when clicking inside accordion
+                        >
+                          <div className="accordion-divider" />
+
+                          <div className="accordion-details">
+                            <div className="details-col-left">
+                              <h5>📚 Core Syllabus</h5>
+                              <ul className="subtopics-list">
+                                {step.subtopics.map((sub, i) => (
+                                  <li key={i}>
+                                    <CheckCircle2 size={14} className="bullet-check" />
+                                    <span>{sub}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            <div className="details-col-right">
+                              <h5>💡 Mentor's Secret Tip</h5>
+                              <p className="mentor-tip-text">{step.tips}</p>
+
+                              {/* Direct Links integration */}
+                              {step.link ? (
+                                <Link to={step.link} className="step-cta-button highlight-cta">
+                                  {step.linkLabel}
+                                </Link>
+                              ) : activeTrack === 'dsa' ? (
+                                <Link to="/" className="step-cta-button">
+                                  Go to DSA Practice Quest ➜
+                                </Link>
+                              ) : (
+                                <div className="step-completed-placeholder">
+                                  <Sparkles size={14} className="sparkle-gold" />
+                                  <span>Prepare this stage thoroughly to advance</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
-
       </div>
       <SiteFooter />
     </main>
   );
 }
+

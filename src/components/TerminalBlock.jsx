@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const terminalLines = [
   { type: 'command', text: 'npm run dsa:focus' },
-  { type: 'output', text: 'loading striver a-z sheet...' },
+  { type: 'output', text: 'loading dsa sheets...' },
   { type: 'output-highlight', text: '191 problems indexed' },
   { type: 'blank', text: '' },
   { type: 'command', text: 'track --today' },
@@ -36,7 +36,7 @@ export default function TerminalBlock() {
         <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
         <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
         <span className="absolute left-1/2 -translate-x-1/2 text-[#d8dae0]/40 text-xs font-mono">
-          dsa-quest.sh
+          codewithshub.sh
         </span>
       </div>
 
