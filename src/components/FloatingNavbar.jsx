@@ -54,7 +54,7 @@ export default function FloatingNavbar() {
         
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2 text-[#f2f2f4] text-[15px] font-semibold justify-self-start group transition-colors" aria-label="CodeWithShub Home">
-          <span className="group-hover:text-[#c084fc] transition-colors">CodeWithShub</span>
+          <span className="group-hover:text-[#d4a843] transition-colors">CodeWithShub</span>
         </Link>
 
         {/* Center Links */}

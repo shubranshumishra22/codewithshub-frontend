@@ -4879,7 +4879,7 @@ h6 {
 }
 
 .footer-links-list a:hover {
-  color: #c084fc;
+  color: #d4a843;
 }
 
 .footer-socials {
@@ -4902,9 +4902,9 @@ h6 {
 }
 
 .footer-socials a:hover {
-  color: var(--text-primary);
-  border-color: rgba(59, 130, 246, 0.3);
-  background: rgba(59, 130, 246, 0.05);
+  color: #d4a843;
+  border-color: rgba(212, 168, 67, 0.3);
+  background: rgba(212, 168, 67, 0.05);
   transform: translateY(-2px);
 }
 
@@ -4946,7 +4946,7 @@ h6 {
 }
 
 .footer-author-credit a:hover {
-  color: #c084fc;
+  color: #d4a843;
 }
 
 .heart-icon {
