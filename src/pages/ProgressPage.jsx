@@ -287,6 +287,7 @@ export default function ProgressPage() {
   const hasError = sheetsQuery.error || topicsQuery.error || progressQuery.error || settingsQuery.error;
 
   return (
+    <>
     <main className="progress-shell">
       {/* Background glowing gradients */}
       <div className="progress-bg-glow-1" />
@@ -494,8 +495,8 @@ export default function ProgressPage() {
           </div>
         )}
       </section>
-      <SiteFooter />
     </main>
-  );
+      <SiteFooter />
+    </>);
 }
 

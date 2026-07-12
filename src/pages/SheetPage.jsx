@@ -942,6 +942,7 @@ export default function SheetPage() {
   };
 
   return (
+    <>
     <main className="dashboard-shell" style={{ position: 'relative' }}>
       {/* Ambient background glows */}
       <div className="sheet-bg-glow-1" />
@@ -1104,7 +1105,6 @@ export default function SheetPage() {
           </div>
         )}
 
-        <SiteFooter />
       </div>
 
       <NotesModal
@@ -1123,5 +1123,6 @@ export default function SheetPage() {
         onClose={() => setLogicCheckQuestion(null)}
       />
     </main>
-  );
+      <SiteFooter />
+    </>);
 }

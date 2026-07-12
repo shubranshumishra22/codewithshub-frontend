@@ -196,6 +196,7 @@ export default function PublicSheetLandingPage() {
   const isLoading = questionsQuery.isLoading;
 
   return (
+    <>
     <main className="sheet-shell" style={{ paddingTop: '100px' }}>
       <div className="sheet-card auth-entrance">
         {/* Header Section */}
@@ -393,8 +394,6 @@ export default function PublicSheetLandingPage() {
           </div>
         )}
       </div>
-      <SiteFooter />
-
       {/* Login Prompt Modal */}
       {showLoginPrompt && (
         <div className="modal-backdrop" role="presentation" onClick={() => setShowLoginPrompt(false)}>
@@ -423,5 +422,6 @@ export default function PublicSheetLandingPage() {
         </div>
       )}
     </main>
-  );
+      <SiteFooter />
+    </>);
 }

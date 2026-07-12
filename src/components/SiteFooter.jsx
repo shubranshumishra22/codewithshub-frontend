@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { BookOpen, Github, Linkedin, Globe, Heart } from 'lucide-react';
+import { BookOpen, Github, Linkedin, Globe, Heart, Instagram } from 'lucide-react';
 
 const creditUrl = 'https://shubranshu.vercel.app/';
 
@@ -25,7 +25,7 @@ export default function SiteFooter() {
           <h4 className="footer-col-title">Syllabus & Tools</h4>
           <ul className="footer-links-list">
             <li>
-              <Link to="/">DSA Sheets</Link>
+              <Link to="/sheets">DSA Sheets</Link>
             </li>
             <li>
               <Link to="/roadmap/best-dsa-preparation-roadmap-for-beginners">Preparation Roadmap</Link>
@@ -61,6 +61,9 @@ export default function SiteFooter() {
             </a>
             <a href="https://www.linkedin.com/in/shubranshu-shekhar-633192299" target="_blank" rel="noreferrer" title="LinkedIn">
               <Linkedin size={18} />
+            </a>
+            <a href="https://www.instagram.com/codewithshub.dev/?hl=en" target="_blank" rel="noreferrer" title="Instagram">
+              <Instagram size={18} />
             </a>
           </div>
         </div>

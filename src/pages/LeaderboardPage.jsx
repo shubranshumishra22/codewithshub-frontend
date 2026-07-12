@@ -127,6 +127,7 @@ export default function LeaderboardPage() {
   const listToRender = showPodium ? displayList.slice(3) : displayList;
 
   return (
+    <>
     <main className="leaderboard-shell">
       {/* Background radial glow */}
       <div className="leaderboard-bg-glow-1" />
@@ -477,8 +478,8 @@ export default function LeaderboardPage() {
           </div>
         </div>
       </div>
-      <SiteFooter />
     </main>
-  );
+      <SiteFooter />
+    </>);
 }
 

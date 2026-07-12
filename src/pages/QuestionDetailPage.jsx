@@ -155,6 +155,7 @@ export default function QuestionDetailPage() {
   const difficulty = difficultyMeta[question.difficulty] || difficultyMeta.medium;
 
   return (
+    <>
     <main className="sheet-shell" style={{ paddingTop: '100px' }}>
       <div className="sheet-card auth-entrance">
         {/* Back Navigation */}
@@ -308,8 +309,6 @@ export default function QuestionDetailPage() {
 
         </div>
       </div>
-      <SiteFooter />
-
       {/* Login Prompt Modal */}
       {showLoginPrompt && (
         <div className="modal-backdrop" role="presentation" onClick={() => setShowLoginPrompt(false)}>
@@ -338,5 +337,6 @@ export default function QuestionDetailPage() {
         </div>
       )}
     </main>
-  );
+      <SiteFooter />
+    </>);
 }

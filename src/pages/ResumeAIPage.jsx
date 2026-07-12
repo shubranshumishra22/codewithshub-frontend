@@ -326,6 +326,7 @@ export default function ResumeAIPage() {
   const analysis = result?.analysis;
 
   return (
+    <>
     <div className="min-h-screen bg-[#0a0a0c] font-sans selection:bg-[#d4a843] selection:text-[#0a0a0c]">
       <div className="max-w-[1000px] mx-auto px-6 pt-32 pb-24">
         
@@ -653,7 +654,7 @@ export default function ResumeAIPage() {
           </motion.div>
         )}
       </div>
-      <SiteFooter />
     </div>
-  );
+      <SiteFooter />
+    </>);
 }

@@ -255,6 +255,7 @@ export default function RoadmapPage() {
   const currentSteps = activeTrack === 'dsa' ? dsaMasteryPath : careerPrepPath;
 
   return (
+    <>
     <main className="roadmap-shell">
       {/* Background glowing gradients */}
       <div className="roadmap-bg-glow-1" />
@@ -397,8 +398,8 @@ export default function RoadmapPage() {
           </div>
         </section>
       </div>
-      <SiteFooter />
     </main>
-  );
+      <SiteFooter />
+    </>);
 }
 
