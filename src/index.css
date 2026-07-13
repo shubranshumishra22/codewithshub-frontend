@@ -4990,11 +4990,184 @@ h6 {
   }
 }
 
+/* --- Redesigned Premium Style Overrides --- */
 
+/* Typography */
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: 'Manrope', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: -0.03em;
+}
 
+body, p, span, li, button, input {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
 
+.font-mono, .code-mono {
+  font-family: 'JetBrains Mono', monospace !important;
+}
 
+/* Background Grids */
+.hero-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: center;
+  /* Revert center mask, fade out only towards the bottom to blend with page content */
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 60%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 60%, rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
 
+/* Custom animated glows */
+.radial-pulse-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, rgba(59, 130, 246, 0.03) 50%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  animation: glowPulse 8s infinite alternate ease-in-out;
+}
+
+@keyframes glowPulse {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+  100% { transform: scale(1.15) translate(40px, -20px); opacity: 1; }
+}
+
+/* Marquee Scroll styles */
+.tech-marquee-wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  display: flex;
+}
+
+.tech-marquee-wrapper::before,
+.tech-marquee-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.tech-marquee-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, #0A0A0A 0%, transparent 100%);
+}
+
+.tech-marquee-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, #0A0A0A 0%, transparent 100%);
+}
+
+.tech-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 35s linear infinite;
+  gap: 50px;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Custom premium buttons */
+.premium-btn-primary {
+  position: relative;
+  background: #111;
+  color: #FAFAFA;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 28px;
+  border-radius: 9999px;
+  font-weight: 600;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.premium-btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 9999px;
+  padding: 1px;
+  background: linear-gradient(to right, #d4a843, #a855f7, #6366f1);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.premium-btn-primary:hover::before {
+  opacity: 1;
+}
+
+.premium-btn-primary:hover {
+  background: #151515;
+  box-shadow: 0 0 20px rgba(212, 168, 67, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Bento card modern container */
+.bento-card {
+  background: linear-gradient(180deg, rgba(16, 16, 18, 0.75) 0%, rgba(10, 10, 12, 0.5) 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  padding: 28px 24px;
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bento-card:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(20, 20, 24, 0.8) 0%, rgba(12, 12, 14, 0.6) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.01);
+}
+
+/* Timeline updates */
+.roadmap-timeline-node.node-premium {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: #0A0A0A;
+  color: #FAFAFA;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+}
+
+.roadmap-step-card.premium-step-card {
+  background: linear-gradient(180deg, rgba(16, 16, 18, 0.5) 0%, rgba(10, 10, 12, 0.3) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.roadmap-step-card.premium-step-card:hover {
+  background: linear-gradient(180deg, rgba(20, 20, 24, 0.65) 0%, rgba(12, 12, 14, 0.45) 100%);
+  border-color: rgba(212, 168, 67, 0.2);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.roadmap-step-card.premium-step-card.is-expanded-card {
+  border-color: rgba(168, 85, 247, 0.25);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 25px rgba(168, 85, 247, 0.03);
+}
 
 
 
