@@ -232,6 +232,9 @@ export default function RoadmapPage() {
         <div className="radial-pulse-glow top-[-10%] left-[20%]" />
         <div className="radial-pulse-glow bottom-[15%] right-[10%] opacity-40" />
 
+        {/* Floating Rotating Background Cards */}
+        <FloatingBackground />
+
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 px-6 max-w-6xl mx-auto text-center z-10">
 
@@ -257,7 +260,7 @@ export default function RoadmapPage() {
           </motion.p>
 
           {/* Mascot walking ON the buttons */}
-          <div className="relative w-full max-w-xl mx-auto mt-32 mb-16 select-none overflow-visible flex flex-col items-center">
+          <div className="relative w-full max-w-xl mx-auto mt-36 mb-12 select-none overflow-visible flex flex-col items-center">
             
             {/* The Mascot sits in the normal layout flow right above the buttons */}
             <div className="w-full h-[60px] relative pointer-events-none overflow-visible mb-[0px] z-20 flex justify-center">
@@ -402,9 +405,6 @@ export default function RoadmapPage() {
               </a>
             </motion.div>
           </div>
-
-          {/* Interactive Hero Visualizer: Get Interview Ready Priority Tracker */}
-          <GetInterviewReady />
         </section>
 
         {/* Tech Marquee */}
@@ -446,102 +446,158 @@ export default function RoadmapPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {/* Bento Card 1: DSA Sheets */}
-            <div className="bento-card flex flex-col justify-between min-h-[320px]">
+            <div className="bento-card flex flex-col justify-between min-h-[350px] group">
               <div>
-                <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6">
-                  <Code2 size={20} />
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Code2 size={18} />
                 </div>
-                <h3 className="text-xl font-semibold text-white tracking-tight mb-2">Curated DSA Sheets</h3>
-                <p className="text-neutral-400 text-sm leading-relaxed mb-6 font-light">
+                <h3 className="text-lg font-semibold text-white tracking-tight mb-2">Curated DSA Sheets</h3>
+                <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed mb-6 font-light">
                   Access selective handpicked problems to build conceptual pattern recognition.
                 </p>
               </div>
 
-              <div className="space-y-3 bg-black/40 p-4 rounded-xl border border-neutral-900/60">
-                <div className="flex justify-between items-center text-xs font-mono">
-                  <span className="text-neutral-300">Amazon Top 50</span>
-                  <span className="text-[#d4a843] font-semibold">68% Solved</span>
+              <div className="space-y-3.5 bg-[#0D0D11]/90 p-4 rounded-xl border border-white/[0.04] shadow-2xl">
+                {/* Amazon Progress */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-[10px] font-mono tracking-wide">
+                    <span className="text-neutral-400 flex items-center gap-1.5 font-sans">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]" />
+                      Amazon Top 50
+                    </span>
+                    <span className="text-amber-400 font-semibold">68% Solved</span>
+                  </div>
+                  <div className="w-full bg-neutral-900/80 rounded-full h-1.5 overflow-hidden border border-white/[0.02]">
+                    <div className="bg-gradient-to-r from-amber-500 to-amber-300 h-1.5 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.2)]" style={{ width: '68%' }} />
+                  </div>
                 </div>
-                <div className="w-full bg-neutral-900 rounded-full h-1.5 overflow-hidden">
-                  <div className="bg-[#d4a843] h-1.5 rounded-full" style={{ width: '68%' }} />
-                </div>
-                <div className="flex justify-between items-center text-xs font-mono pt-1">
-                  <span className="text-neutral-300">Sliding Window</span>
-                  <span className="text-purple-400 font-semibold">12% Solved</span>
-                </div>
-                <div className="w-full bg-neutral-900 rounded-full h-1.5 overflow-hidden">
-                  <div className="bg-purple-500 h-1.5 rounded-full" style={{ width: '12%' }} />
+
+                {/* Sliding Window Progress */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-[10px] font-mono tracking-wide">
+                    <span className="text-neutral-400 flex items-center gap-1.5 font-sans">
+                      <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_6px_#a855f7]" />
+                      Sliding Window
+                    </span>
+                    <span className="text-purple-400 font-semibold">12% Solved</span>
+                  </div>
+                  <div className="w-full bg-neutral-900/80 rounded-full h-1.5 overflow-hidden border border-white/[0.02]">
+                    <div className="bg-gradient-to-r from-purple-600 to-purple-400 h-1.5 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.2)]" style={{ width: '12%' }} />
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Bento Card 2: AI Resume Reviewer */}
-            <div className="bento-card flex flex-col justify-between min-h-[320px]">
+            <div className="bento-card flex flex-col justify-between min-h-[350px] group">
               <div>
-                <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-6">
-                  <Sparkles size={20} />
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Sparkles size={18} />
                 </div>
-                <h3 className="text-xl font-semibold text-white tracking-tight mb-2">AI Resume Analyzer</h3>
-                <p className="text-neutral-400 text-sm leading-relaxed mb-6 font-light">
+                <h3 className="text-lg font-semibold text-white tracking-tight mb-2">AI Resume Analyzer</h3>
+                <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed mb-6 font-light">
                   Evaluate your resume against top ATS keywords, quantifiable metrics and get recommendations.
                 </p>
               </div>
 
-              <div className="flex gap-4 items-center bg-black/40 p-4 rounded-xl border border-neutral-900/60">
+              <div className="flex gap-4 items-center bg-[#0D0D11]/90 p-4 rounded-xl border border-white/[0.04] shadow-2xl">
                 <div className="relative w-14 h-14 flex-shrink-0 flex items-center justify-center">
                   <svg className="absolute w-full h-full transform -rotate-90">
-                    <circle cx="28" cy="28" r="24" stroke="rgba(255,255,255,0.05)" strokeWidth="4" fill="transparent" />
+                    <circle cx="28" cy="28" r="24" stroke="rgba(255,255,255,0.03)" strokeWidth="4 animate-pulse" fill="transparent" />
                     <circle
                       cx="28"
                       cy="28"
                       r="24"
-                      stroke="#a855f7"
+                      stroke="url(#purpleGlow)"
                       strokeWidth="4"
                       fill="transparent"
                       strokeDasharray={151}
                       strokeDashoffset={151 - (151 * 87) / 100}
+                      strokeLinecap="round"
                     />
+                    <defs>
+                      <linearGradient id="purpleGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#a855f7" />
+                        <stop offset="100%" stopColor="#ec4899" />
+                      </linearGradient>
+                    </defs>
                   </svg>
-                  <span className="text-[11px] font-semibold text-white font-mono">87%</span>
+                  <span className="text-xs font-bold text-white font-mono drop-shadow-[0_0_8px_rgba(168,85,247,0.3)]">87%</span>
                 </div>
-                <div className="space-y-1 text-[11px] font-mono leading-none">
-                  <div className="text-emerald-400 font-medium">✓ Clean Layout Template</div>
-                  <div className="text-emerald-400 font-medium">✓ 14 impact metrics</div>
-                  <div className="text-yellow-500">⚠ Missing system tags</div>
+                <div className="space-y-1.5 text-[9px] leading-tight flex-1 font-sans">
+                  <div className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                    <span className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_4px_#10b981]" />
+                    Clean Layout Template
+                  </div>
+                  <div className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                    <span className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_4px_#10b981]" />
+                    14 impact metrics found
+                  </div>
+                  <div className="flex items-center gap-1.5 text-amber-400 font-medium">
+                    <span className="w-1 h-1 rounded-full bg-amber-500 animate-pulse shadow-[0_0_4px_#f59e0b]" />
+                    Missing system tags
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Bento Card 3: Spaced Repetitions */}
-            <div className="bento-card flex flex-col justify-between min-h-[320px]">
+            <div className="bento-card flex flex-col justify-between min-h-[350px] group">
               <div>
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6">
-                  <Calendar size={20} />
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Calendar size={18} />
                 </div>
-                <h3 className="text-xl font-semibold text-white tracking-tight mb-2">Spaced Repetitions</h3>
-                <p className="text-neutral-400 text-sm leading-relaxed mb-6 font-light">
+                <h3 className="text-lg font-semibold text-white tracking-tight mb-2">Spaced Repetitions</h3>
+                <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed mb-6 font-light">
                   Retain logic patterns permanently using our integrated active recall review queue.
                 </p>
               </div>
 
-              <div className="space-y-2 bg-black/40 p-4 rounded-xl border border-neutral-900/60 text-xs font-mono">
-                <div className="flex justify-between items-center text-neutral-300">
-                  <span>due today</span>
-                  <span className="text-amber-400">Reverse Linked List</span>
+              <div className="space-y-2.5 bg-[#0D0D11]/90 p-4 rounded-xl border border-white/[0.04] shadow-2xl text-[10px]">
+                {/* Item 1 */}
+                <div className="flex justify-between items-center py-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/10 text-[8px] font-bold tracking-wide uppercase font-sans">
+                      Today
+                    </span>
+                    <span className="text-neutral-200 font-semibold font-sans">Reverse Linked List</span>
+                  </div>
+                  <span className="text-red-400/80 animate-pulse font-sans text-[8px] font-medium">Review due</span>
                 </div>
-                <div className="w-full h-px bg-neutral-900/60" />
-                <div className="flex justify-between items-center text-neutral-300">
-                  <span>tomorrow</span>
-                  <span className="text-purple-400">Merge K Lists</span>
+                
+                <div className="w-full h-px bg-white/[0.03]" />
+
+                {/* Item 2 */}
+                <div className="flex justify-between items-center py-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/10 text-[8px] font-bold tracking-wide uppercase font-sans">
+                      Tomorrow
+                    </span>
+                    <span className="text-neutral-300 font-sans">Merge K Lists</span>
+                  </div>
+                  <span className="text-neutral-500 font-sans text-[8px]">Pending</span>
                 </div>
-                <div className="w-full h-px bg-neutral-900/60" />
-                <div className="flex justify-between items-center text-neutral-500">
-                  <span>in 3 days</span>
-                  <span>LRU Cache Design</span>
+
+                <div className="w-full h-px bg-white/[0.03]" />
+
+                {/* Item 3 */}
+                <div className="flex justify-between items-center py-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700/50 text-[8px] font-bold tracking-wide uppercase font-sans">
+                      3 Days
+                    </span>
+                    <span className="text-neutral-400 font-sans">LRU Cache Design</span>
+                  </div>
+                  <span className="text-neutral-600 font-sans text-[8px]">Scheduled</span>
                 </div>
               </div>
             </div>
           </div>
+        </section>
+
+        {/* Priority Syllabus Section */}
+        <section className="relative z-10 px-6 max-w-6xl mx-auto mb-28">
+          <GetInterviewReady />
         </section>
 
         {/* Syllabus Timeline Track section */}
@@ -712,5 +768,320 @@ export default function RoadmapPage() {
       </main>
       <SiteFooter />
     </>
+  );
+}
+
+// Floating, tilting, and rotating micro-mockup decorative cards
+function FloatingBackground() {
+  // Helper to generate a smooth circular orbit path
+  const getCircularPath = (radius, clockwise = true) => {
+    const R = radius;
+    const points = 12; // 12 points for extra smooth interpolation
+    const x = [];
+    const y = [];
+    
+    for (let i = 0; i <= points; i++) {
+      const angle = (i * 2 * Math.PI) / points * (clockwise ? 1 : -1);
+      const currentAngle = angle - Math.PI / 2; // Start at top
+      x.push(Math.cos(currentAngle) * R);
+      y.push(Math.sin(currentAngle) * R);
+    }
+    return { x, y };
+  };
+
+  const path1 = getCircularPath(20, true);
+  const path2 = getCircularPath(24, false);
+  const path3 = getCircularPath(18, true);
+  const path4 = getCircularPath(28, false);
+  const path5 = getCircularPath(22, true);
+  const path6 = getCircularPath(20, false);
+
+  return (
+    <div className="absolute top-0 left-0 right-0 h-[900px] overflow-hidden pointer-events-none z-0 hidden lg:block select-none">
+      {/* Card 1: Circular Progress (Top-Left) */}
+      <motion.div
+        className="absolute p-4 rounded-xl border border-white/5 bg-neutral-950/40 backdrop-blur-md shadow-2xl flex items-center gap-3 w-[205px] pointer-events-auto"
+        style={{
+          top: '120px',
+          left: '4%',
+          rotate: -12,
+          filter: 'blur(0.5px)',
+          opacity: 0.85,
+        }}
+        animate={{
+          x: path1.x,
+          y: path1.y,
+          rotate: [-12, -7, -12, -17, -12],
+        }}
+        whileHover={{
+          scale: 1.05,
+          rotate: -4,
+          filter: 'blur(0px)',
+          opacity: 1,
+          borderColor: 'rgba(212, 168, 67, 0.25)',
+          boxShadow: '0 20px 40px -15px rgba(212, 168, 67, 0.15)',
+          zIndex: 50,
+        }}
+        transition={{
+          x: { duration: 18, repeat: Infinity, ease: 'linear' },
+          y: { duration: 18, repeat: Infinity, ease: 'linear' },
+          rotate: { duration: 8, repeat: Infinity, ease: 'easeInOut' },
+          scale: { type: 'spring', stiffness: 300, damping: 20 },
+        }}
+      >
+        <div className="relative w-11 h-11 flex-shrink-0 flex items-center justify-center">
+          <svg className="absolute w-full h-full transform -rotate-90">
+            <circle cx="22" cy="22" r="19" stroke="rgba(255,255,255,0.05)" strokeWidth="3.5" fill="transparent" />
+            <circle
+              cx="22"
+              cy="22"
+              r="19"
+              stroke="#d4a843"
+              strokeWidth="3.5"
+              fill="transparent"
+              strokeDasharray={119}
+              strokeDashoffset={119 - (119 * 87) / 100}
+            />
+          </svg>
+          <span className="text-[10px] font-semibold text-white font-mono">87%</span>
+        </div>
+        <div className="leading-tight">
+          <div className="text-[11px] font-semibold text-white tracking-wide">DSA Progress</div>
+          <div className="text-[9px] text-neutral-400 font-mono mt-0.5">132 / 150 Solved</div>
+        </div>
+      </motion.div>
+
+      {/* Card 2: AI Resume Reviewer (Top-Right) */}
+      <motion.div
+        className="absolute p-4 rounded-xl border border-white/5 bg-neutral-950/40 backdrop-blur-md shadow-2xl w-[190px] pointer-events-auto"
+        style={{
+          top: '180px',
+          right: '4%',
+          rotate: 10,
+          filter: 'blur(1.5px)',
+          opacity: 0.7,
+        }}
+        animate={{
+          x: path2.x,
+          y: path2.y,
+          rotate: [10, 14, 10, 6, 10],
+        }}
+        whileHover={{
+          scale: 1.05,
+          rotate: 4,
+          filter: 'blur(0px)',
+          opacity: 1,
+          borderColor: 'rgba(168, 85, 247, 0.25)',
+          boxShadow: '0 20px 40px -15px rgba(168, 85, 247, 0.15)',
+          zIndex: 50,
+        }}
+        transition={{
+          x: { duration: 22, repeat: Infinity, ease: 'linear' },
+          y: { duration: 22, repeat: Infinity, ease: 'linear' },
+          rotate: { duration: 8, repeat: Infinity, ease: 'easeInOut' },
+          scale: { type: 'spring', stiffness: 300, damping: 20 },
+        }}
+      >
+        <div className="flex items-center gap-2 mb-2">
+          <Sparkles size={13} className="text-purple-400" />
+          <span className="text-[10px] uppercase font-mono tracking-wider text-purple-300 font-semibold font-mono">Resume AI</span>
+        </div>
+        <div className="space-y-1.5">
+          <div className="flex justify-between items-center text-[10px]">
+            <span className="text-neutral-400 font-mono">ATS Rating</span>
+            <span className="text-emerald-400 font-semibold font-mono">87%</span>
+          </div>
+          <div className="w-full bg-neutral-900/80 rounded-full h-1.5 overflow-hidden">
+            <div className="bg-purple-500 h-1.5 rounded-full" style={{ width: '87%' }} />
+          </div>
+          <div className="text-[8px] text-emerald-400/90 font-mono pt-0.5">✓ Quantifiable metrics found</div>
+        </div>
+      </motion.div>
+
+      {/* Card 3: Leaderboard Trophy (Mid-Left) */}
+      <motion.div
+        className="absolute p-4 rounded-xl border border-white/5 bg-neutral-950/40 backdrop-blur-md shadow-2xl flex items-center gap-3.5 w-[185px] pointer-events-auto"
+        style={{
+          top: '380px',
+          left: '3%',
+          rotate: 8,
+          filter: 'blur(0px)',
+          opacity: 0.9,
+        }}
+        animate={{
+          x: path3.x,
+          y: path3.y,
+          rotate: [8, 12, 8, 4, 8],
+        }}
+        whileHover={{
+          scale: 1.05,
+          rotate: 3,
+          filter: 'blur(0px)',
+          opacity: 1,
+          borderColor: 'rgba(251, 191, 36, 0.25)',
+          boxShadow: '0 20px 40px -15px rgba(251, 191, 36, 0.15)',
+          zIndex: 50,
+        }}
+        transition={{
+          x: { duration: 16, repeat: Infinity, ease: 'linear' },
+          y: { duration: 16, repeat: Infinity, ease: 'linear' },
+          rotate: { duration: 7.5, repeat: Infinity, ease: 'easeInOut' },
+          scale: { type: 'spring', stiffness: 300, damping: 20 },
+        }}
+      >
+        <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 flex-shrink-0">
+          <Trophy size={18} />
+        </div>
+        <div className="leading-tight">
+          <div className="text-[10px] text-neutral-400 uppercase font-mono tracking-wider font-semibold font-mono">Weekly Rank</div>
+          <div className="text-sm font-bold text-white mt-0.5">Rank #12</div>
+          <div className="text-[8px] text-emerald-400 font-mono mt-0.5">+150 pts this week</div>
+        </div>
+      </motion.div>
+
+      {/* Card 4: Code Syntax Snippet (Mid-Right) */}
+      <motion.div
+        className="absolute p-4 rounded-xl border border-white/5 bg-neutral-950/40 backdrop-blur-md shadow-2xl w-[220px] font-mono text-[9px] pointer-events-auto"
+        style={{
+          top: '440px',
+          right: '4%',
+          rotate: -14,
+          filter: 'blur(0.5px)',
+          opacity: 0.8,
+        }}
+        animate={{
+          x: path4.x,
+          y: path4.y,
+          rotate: [-14, -9, -14, -19, -14],
+        }}
+        whileHover={{
+          scale: 1.05,
+          rotate: -5,
+          filter: 'blur(0px)',
+          opacity: 1,
+          borderColor: 'rgba(59, 130, 246, 0.25)',
+          boxShadow: '0 20px 40px -15px rgba(59, 130, 246, 0.15)',
+          zIndex: 50,
+        }}
+        transition={{
+          x: { duration: 26, repeat: Infinity, ease: 'linear' },
+          y: { duration: 26, repeat: Infinity, ease: 'linear' },
+          rotate: { duration: 8.5, repeat: Infinity, ease: 'easeInOut' },
+          scale: { type: 'spring', stiffness: 300, damping: 20 },
+        }}
+      >
+        <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/[0.04]">
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500/50" />
+            <span className="w-1.5 h-1.5 rounded-full bg-yellow-500/50" />
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500/50" />
+          </div>
+          <span className="text-neutral-500 text-[8px]">twoPointerSwap.cpp</span>
+        </div>
+        <div className="space-y-1 text-neutral-400">
+          <div><span className="text-amber-500">while</span> (left &lt; right) &#123;</div>
+          <div className="pl-3.5"><span className="text-purple-400">swap</span>(arr[left++],</div>
+          <div className="pl-11">arr[right--]);</div>
+          <div>&#125;</div>
+        </div>
+      </motion.div>
+
+      {/* Card 5: Spaced Repetition (Bottom-Left) */}
+      <motion.div
+        className="absolute p-4 rounded-xl border border-white/5 bg-neutral-950/40 backdrop-blur-md shadow-2xl w-[190px] pointer-events-auto"
+        style={{
+          top: '640px',
+          left: '6%',
+          rotate: -8,
+          filter: 'blur(2px)',
+          opacity: 0.6,
+        }}
+        animate={{
+          x: path5.x,
+          y: path5.y,
+          rotate: [-8, -4, -8, -12, -8],
+        }}
+        whileHover={{
+          scale: 1.05,
+          rotate: -3,
+          filter: 'blur(0px)',
+          opacity: 1,
+          borderColor: 'rgba(99, 102, 241, 0.25)',
+          boxShadow: '0 20px 40px -15px rgba(99, 102, 241, 0.15)',
+          zIndex: 50,
+        }}
+        transition={{
+          x: { duration: 20, repeat: Infinity, ease: 'linear' },
+          y: { duration: 20, repeat: Infinity, ease: 'linear' },
+          rotate: { duration: 9, repeat: Infinity, ease: 'easeInOut' },
+          scale: { type: 'spring', stiffness: 300, damping: 20 },
+        }}
+      >
+        <div className="flex items-center gap-2 mb-2">
+          <Calendar size={13} className="text-indigo-400" />
+          <span className="text-[10px] uppercase font-mono tracking-wider text-indigo-300 font-semibold font-mono">Active Recall</span>
+        </div>
+        <div className="space-y-2">
+          <div className="text-[11px] font-semibold text-white tracking-wide">Merge K Lists</div>
+          <div className="flex justify-between items-center text-[8px] font-mono mt-0.5">
+            <span className="text-neutral-500 font-mono">Interval: 4 days</span>
+            <span className="px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 font-semibold border border-red-500/10">Due Now</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Card 6: Graph Nodes Visualizer (Bottom-Right) */}
+      <motion.div
+        className="absolute p-4 rounded-xl border border-white/5 bg-neutral-950/40 backdrop-blur-md shadow-2xl w-[180px] pointer-events-auto"
+        style={{
+          top: '680px',
+          right: '6%',
+          rotate: 12,
+          filter: 'blur(1px)',
+          opacity: 0.75,
+        }}
+        animate={{
+          x: path6.x,
+          y: path6.y,
+          rotate: [12, 16, 12, 8, 12],
+        }}
+        whileHover={{
+          scale: 1.05,
+          rotate: 5,
+          filter: 'blur(0px)',
+          opacity: 1,
+          borderColor: 'rgba(236, 72, 153, 0.25)',
+          boxShadow: '0 20px 40px -15px rgba(236, 72, 153, 0.15)',
+          zIndex: 50,
+        }}
+        transition={{
+          x: { duration: 18, repeat: Infinity, ease: 'linear' },
+          y: { duration: 18, repeat: Infinity, ease: 'linear' },
+          rotate: { duration: 7.8, repeat: Infinity, ease: 'easeInOut' },
+          scale: { type: 'spring', stiffness: 300, damping: 20 },
+        }}
+      >
+        <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/[0.04]">
+          <span className="text-[10px] uppercase font-mono tracking-wider text-pink-400 font-semibold font-mono">Graph Nodes</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-pink-500/60 animate-pulse" />
+        </div>
+        <div className="h-[48px] w-full flex items-center justify-center">
+          <svg width="120" height="44" className="overflow-visible">
+            {/* Connection Lines */}
+            <line x1="20" y1="22" x2="55" y2="10" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
+            <line x1="20" y1="22" x2="55" y2="34" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
+            <line x1="55" y1="10" x2="100" y2="22" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
+            <line x1="55" y1="34" x2="100" y2="22" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
+            <line x1="55" y1="10" x2="55" y2="34" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="2 2" />
+
+            {/* Nodes */}
+            <circle cx="20" cy="22" r="5" fill="#3b82f6" filter="drop-shadow(0 0 4px #3b82f6)" />
+            <circle cx="55" cy="10" r="5" fill="#a855f7" filter="drop-shadow(0 0 4px #a855f7)" />
+            <circle cx="55" cy="34" r="5" fill="#f59e0b" filter="drop-shadow(0 0 4px #f59e0b)" />
+            <circle cx="100" cy="22" r="5" fill="#ec4899" filter="drop-shadow(0 0 4px #ec4899)" />
+          </svg>
+        </div>
+      </motion.div>
+    </div>
   );
 }
