@@ -326,7 +326,6 @@ export default function LeaderboardPage() {
                     <span className="col-rank">Rank</span>
                     <span className="col-user">Player</span>
                     <span className="col-streak">Streak</span>
-                    <span className="col-division">Division</span>
                   </div>
                 )}
 
@@ -378,15 +377,6 @@ export default function LeaderboardPage() {
                         <span className="row-streak-text">{player.streak_count} days</span>
                       </div>
 
-                      <div className="row-division">
-                        {rankClass.label !== 'Inactive' ? (
-                          <span className={`division-badge ${rankClass.className}`}>
-                            {rankClass.label}
-                          </span>
-                        ) : (
-                          <span className="text-neutral-500 font-mono text-xs">-</span>
-                        )}
-                      </div>
                     </motion.div>
                   );
                 })}
