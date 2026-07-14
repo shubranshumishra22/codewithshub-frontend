@@ -163,8 +163,8 @@ export default function LeaderboardPage() {
               <button
                 className={`filter-tab ${activeTab === 'division' ? 'active' : ''}`}
                 onClick={() => setActiveTab('division')}
-                disabled={!currentUserDivision}
-                title={!currentUserDivision ? 'You need to be in a division to filter' : ''}
+                disabled={!currentUserDivision || currentUserDivision.label === 'Inactive'}
+                title={!currentUserDivision || currentUserDivision.label === 'Inactive' ? 'You need to be in an active division to filter' : ''}
               >
                 My Division
               </button>
@@ -379,9 +379,13 @@ export default function LeaderboardPage() {
                       </div>
 
                       <div className="row-division">
-                        <span className={`division-badge ${rankClass.className}`}>
-                          {rankClass.label}
-                        </span>
+                        {rankClass.label !== 'Inactive' ? (
+                          <span className={`division-badge ${rankClass.className}`}>
+                            {rankClass.label}
+                          </span>
+                        ) : (
+                          <span className="text-neutral-500 font-mono text-xs">-</span>
+                        )}
                       </div>
                     </motion.div>
                   );
@@ -428,9 +432,13 @@ export default function LeaderboardPage() {
                   </div>
                   <div className="profile-stat-box">
                     <span className="stat-label">Division</span>
-                    <span className={`division-badge ${getRankClass(currentUserItem.streak_count).className}`}>
-                      {getRankClass(currentUserItem.streak_count).label}
-                    </span>
+                    {getRankClass(currentUserItem.streak_count).label !== 'Inactive' ? (
+                      <span className={`division-badge ${getRankClass(currentUserItem.streak_count).className}`}>
+                        {getRankClass(currentUserItem.streak_count).label}
+                      </span>
+                    ) : (
+                      <span className="text-neutral-500 font-mono text-xs">-</span>
+                    )}
                   </div>
                 </div>
 
