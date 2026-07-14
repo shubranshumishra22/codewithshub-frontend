@@ -11,8 +11,7 @@ const getRankClass = (streak) => {
   if (streak >= 30) return { label: 'Grandmaster', className: 'rank-grandmaster' };
   if (streak >= 15) return { label: 'Master', className: 'rank-master' };
   if (streak >= 7) return { label: 'Expert', className: 'rank-expert' };
-  if (streak >= 1) return { label: 'Explorer', className: 'rank-explorer' };
-  return { label: 'Inactive', className: 'rank-inactive' };
+  return { label: 'Explorer', className: 'rank-explorer' };
 };
 
 const getNextDivisionProgress = (streak) => {
@@ -53,26 +52,18 @@ const getNextDivisionProgress = (streak) => {
       percent,
     };
   }
-  if (streak >= 1) {
-    const base = 1;
-    const target = 7;
-    const progress = streak - base;
-    const total = target - base;
-    const percent = Math.min(100, Math.max(0, (progress / total) * 100));
-    return {
-      label: 'Explorer',
-      streak,
-      nextStreak: target,
-      nextLabel: 'Expert',
-      percent,
-    };
-  }
+  // For Explorer (streak 0-6)
+  const base = 0;
+  const target = 7;
+  const progress = streak - base;
+  const total = target - base;
+  const percent = Math.min(100, Math.max(0, (progress / total) * 100));
   return {
-    label: 'Inactive',
-    streak: 0,
-    nextStreak: 1,
-    nextLabel: 'Explorer',
-    percent: 0,
+    label: 'Explorer',
+    streak,
+    nextStreak: target,
+    nextLabel: 'Expert',
+    percent,
   };
 };
 
@@ -163,8 +154,6 @@ export default function LeaderboardPage() {
               <button
                 className={`filter-tab ${activeTab === 'division' ? 'active' : ''}`}
                 onClick={() => setActiveTab('division')}
-                disabled={!currentUserDivision || currentUserDivision.label === 'Inactive'}
-                title={!currentUserDivision || currentUserDivision.label === 'Inactive' ? 'You need to be in an active division to filter' : ''}
               >
                 My Division
               </button>
@@ -422,13 +411,9 @@ export default function LeaderboardPage() {
                   </div>
                   <div className="profile-stat-box">
                     <span className="stat-label">Division</span>
-                    {getRankClass(currentUserItem.streak_count).label !== 'Inactive' ? (
-                      <span className={`division-badge ${getRankClass(currentUserItem.streak_count).className}`}>
-                        {getRankClass(currentUserItem.streak_count).label}
-                      </span>
-                    ) : (
-                      <span className="text-neutral-500 font-mono text-xs">-</span>
-                    )}
+                    <span className={`division-badge ${getRankClass(currentUserItem.streak_count).className}`}>
+                      {getRankClass(currentUserItem.streak_count).label}
+                    </span>
                   </div>
                 </div>
 
