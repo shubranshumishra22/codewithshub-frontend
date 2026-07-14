@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SiteFooter from '../components/SiteFooter';
+import GetInterviewReady from '../components/GetInterviewReady';
 
 const dsaMasteryPath = [
   {
@@ -402,50 +403,8 @@ export default function RoadmapPage() {
             </motion.div>
           </div>
 
-          {/* Interactive Hero Visualizer */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="relative w-full max-w-3xl mx-auto rounded-xl border border-neutral-800 bg-[#0E0E10]/95 backdrop-blur-md overflow-hidden shadow-2xl shadow-black/80"
-          >
-            <div className="flex items-center justify-between px-4 py-3 bg-[#16161A]/85 border-b border-neutral-900">
-              <div className="flex gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#EF4444]/80" />
-                <span className="w-3 h-3 rounded-full bg-[#F59E0B]/80" />
-                <span className="w-3 h-3 rounded-full bg-[#10B981]/80" />
-              </div>
-              <span className="text-neutral-500 font-mono text-xs select-none">dsa-runner.js</span>
-              <span className="text-neutral-500 font-mono text-xs invisible sm:visible select-none">CodeWithShub Terminal</span>
-            </div>
-            <div className="p-6 text-left font-mono text-xs sm:text-sm leading-relaxed text-neutral-300 min-h-[240px] select-none">
-              <div className="text-[#d4a843]">$ node dsa-runner.js --problem "longest-consecutive-sequence" --run-tests</div>
-              <div className="text-neutral-500">Parsing solution.cpp... Compiled successfully.</div>
-              <div className="text-neutral-500 mb-2">Running test suite (15 input vectors)...</div>
-              
-              <div className="flex justify-between">
-                <span className="text-neutral-400">✓ Case 1: [100, 4, 200, 1, 3, 2]</span>
-                <span className="text-emerald-400 font-medium">PASS (Expected: 4, Got: 4)</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-neutral-400">✓ Case 2: [0, 3, 7, 2, 5, 8, 4, 6, 0, 1]</span>
-                <span className="text-emerald-400 font-medium">PASS (Expected: 9, Got: 9)</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-neutral-400">✓ Case 3: [] (Edge Case)</span>
-                <span className="text-emerald-400 font-medium">PASS (Expected: 0, Got: 0)</span>
-              </div>
-              
-              <div className="text-emerald-400 font-semibold mt-3 animate-pulse">✓ ALL 15 TEST CASES PASSED 🚀</div>
-              <div className="text-purple-400 text-xs mt-1">Complexity: Time: O(N) | Space: O(N) auxiliary maps</div>
-
-              <div className="mt-4 p-3 bg-neutral-900/40 border border-neutral-800/80 rounded-lg flex flex-col sm:flex-row sm:justify-between gap-2">
-                <div className="text-neutral-400">Overall Progress: <span className="text-[#d4a843] font-semibold">142/450 Solved</span></div>
-                <div className="text-neutral-400">Streak: <span className="text-amber-400 font-semibold">18 Days 🔥</span></div>
-                <div className="text-neutral-400">Global Rank: <span className="text-white font-semibold">#24</span></div>
-              </div>
-            </div>
-          </motion.div>
+          {/* Interactive Hero Visualizer: Get Interview Ready Priority Tracker */}
+          <GetInterviewReady />
         </section>
 
         {/* Tech Marquee */}
