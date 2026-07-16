@@ -12,6 +12,7 @@ import QuestionDetailPage from './pages/QuestionDetailPage';
 import ResumeAIPage from './pages/ResumeAIPage';
 import RoadmapPage from './pages/RoadmapPage';
 import PublicSheetLandingPage from './pages/PublicSheetLandingPage';
+import CompanyPage from './pages/CompanyPage';
 
 export default function App() {
   return (
@@ -33,6 +34,15 @@ export default function App() {
               <ProtectedRoute>
                 <FloatingNavbar />
                 <SheetPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/interview-questions"
+            element={
+              <ProtectedRoute>
+                <FloatingNavbar />
+                <CompanyPage />
               </ProtectedRoute>
             }
           />

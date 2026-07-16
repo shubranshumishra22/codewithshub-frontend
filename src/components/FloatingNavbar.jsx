@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, FileText, LogOut, Sparkles, Trophy } from 'lucide-react';
+import { BookOpen, FileText, LogOut, Sparkles, Trophy, Briefcase } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
@@ -69,6 +69,18 @@ export default function FloatingNavbar() {
           >
             <BookOpen size={15} />
             <span>Sheets</span>
+          </Link>
+
+          <Link
+            to="/interview-questions"
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              location.pathname === '/interview-questions'
+                ? 'text-[#f2f2f4] bg-[#232327]/50'
+                : 'text-[#93939c] hover:text-[#f2f2f4] hover:bg-[#232327]/30'
+            }`}
+          >
+            <Briefcase size={15} />
+            <span>Companies</span>
           </Link>
 
           {user && (

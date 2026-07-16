@@ -341,18 +341,25 @@ export default function SheetPage() {
     queryKey: ['sheet-revisions', sheetId, user?.id],
     enabled: Boolean(sheetId && user?.id && questionIds.length > 0),
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('revision_schedule')
-        .select('id, question_id, due_date, is_completed, revision_day')
-        .eq('user_id', user.id)
-        .in('question_id', questionIds)
-        .order('revision_day', { ascending: true });
-
-      if (error) {
-        throw error;
+      const CHUNK_SIZE = 150;
+      const chunks = [];
+      for (let i = 0; i < questionIds.length; i += CHUNK_SIZE) {
+        chunks.push(questionIds.slice(i, i + CHUNK_SIZE));
       }
 
-      return data ?? [];
+      const queries = chunks.map(async (chunk) => {
+        const { data, error } = await supabase
+          .from('revision_schedule')
+          .select('id, question_id, due_date, is_completed, revision_day')
+          .eq('user_id', user.id)
+          .in('question_id', chunk);
+
+        if (error) throw error;
+        return data ?? [];
+      });
+
+      const results = await Promise.all(queries);
+      return results.flat().sort((a, b) => a.revision_day - b.revision_day);
     },
   });
 
